@@ -25,11 +25,21 @@ export default function RottaProtetta({ children }) {
         if (!cancellato) {
           setStatoPiattaforma(risposta)
 
-          // Se la Edge Function restituisce uno stato ban diverso da quello in sessione, aggiorniamo il Context
-          // (La Edge Function usa service_role, quindi legge i dati reali dal DB senza blocchi RLS)
-          const banCambiato = risposta.bannato_fino_a !== utente.bannato_fino_a
-          if (banCambiato) {
-            accedi({ ...utente, bannato_fino_a: risposta.bannato_fino_a, motivo_ban: risposta.motivo_ban })
+          // Se la Edge Function restituisce i dati utente aggiornati dal DB (in utente_aggiornato)
+          const infoAggiornate = risposta.utente_aggiornato
+          if (infoAggiornate) {
+            const ruoloCambiato = infoAggiornate.ruolo && infoAggiornate.ruolo !== utente.ruolo
+            const banCambiato = infoAggiornate.bannato_fino_a !== utente.bannato_fino_a
+            const motivoBanCambiato = infoAggiornate.motivo_ban !== utente.motivo_ban
+
+            if (ruoloCambiato || banCambiato || motivoBanCambiato) {
+              accedi({
+                ...utente,
+                ruolo: infoAggiornate.ruolo ?? utente.ruolo,
+                bannato_fino_a: infoAggiornate.bannato_fino_a,
+                motivo_ban: infoAggiornate.motivo_ban,
+              })
+            }
           }
         }
       } catch {

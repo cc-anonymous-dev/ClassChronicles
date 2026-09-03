@@ -455,6 +455,7 @@ function ZonaPericolo({ utente }) {
 }
 
 function GestioneUtenti({ utente }) {
+  const { accedi } = useAuth()
   const [utenti, setUtenti] = useState([])
   const [motiviPredefiniti, setMotiviPredefiniti] = useState([])
   const [caricamento, setCaricamento] = useState(true)
@@ -485,6 +486,10 @@ function GestioneUtenti({ utente }) {
         azione,
         ...extra,
       })
+      if (utente_target_id === utente.id) {
+        if (azione === 'promuovi_admin') accedi({ ...utente, ruolo: 'admin' })
+        if (azione === 'rimuovi_admin') accedi({ ...utente, ruolo: 'studente' })
+      }
       await caricaUtenti()
     } catch (err) {
       setErrore(err.message)

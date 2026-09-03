@@ -3,8 +3,42 @@ import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { useZoom } from '../lib/ZoomContext'
+import { useTema } from '../lib/TemaContext'
 import LayoutApp from '../components/LayoutApp'
 import BannerFeedback from '../components/BannerFeedback'
+
+function ControlloTema() {
+  const { tema, impostaTemaScuro, impostaTemaChiaro } = useTema()
+
+  return (
+    <div className="neo-card">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+        <span className="text-body-md" style={{ fontWeight: 600 }}>Tema Interfaccia</span>
+        <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: 0 }}>
+          Scegli l'aspetto visivo di Class Chronicles. Il tema scuro è quello predefinito.
+        </p>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)', marginTop: 4 }}>
+          <button
+            type="button"
+            className={`btn-brutalist ${tema === 'scuro' ? 'btn-primary-container' : 'btn-secondary-outline'}`}
+            style={{ flex: 1, padding: '10px 14px', fontSize: 14 }}
+            onClick={impostaTemaScuro}
+          >
+            🌙 Scuro {tema === 'scuro' && '(Attivo)'}
+          </button>
+          <button
+            type="button"
+            className={`btn-brutalist ${tema === 'chiaro' ? 'btn-primary-container' : 'btn-secondary-outline'}`}
+            style={{ flex: 1, padding: '10px 14px', fontSize: 14 }}
+            onClick={impostaTemaChiaro}
+          >
+            ☀️ Chiaro {tema === 'chiaro' && '(Attivo)'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function ControlloZoom() {
   const { livelloZoom, aumentaZoom, diminuisciZoom, ripristinaZoom, ZOOM_MINIMO, ZOOM_MASSIMO } = useZoom()
@@ -148,6 +182,7 @@ export default function Impostazioni() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
         <h2 className="text-headline-md" style={{ margin: 0 }}>Impostazioni</h2>
 
+        <ControlloTema />
         <ControlloZoom />
         <SezioneEliminaAccount utente={utente} onEliminato={gestisciAccountEliminato} />
         

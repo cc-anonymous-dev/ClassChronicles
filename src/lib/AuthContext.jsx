@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+﻿import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const AuthContext = createContext(null)
 
@@ -25,15 +25,15 @@ export function AuthProvider({ children }) {
     setCaricamento(false)
   }, [])
 
-  function accedi(datiUtente) {
+  const accedi = useCallback((datiUtente) => {
     setUtente(datiUtente)
     localStorage.setItem(CHIAVE_STORAGE, JSON.stringify(datiUtente))
-  }
+  }, [])
 
-  function esci() {
+  const esci = useCallback(() => {
     setUtente(null)
     localStorage.removeItem(CHIAVE_STORAGE)
-  }
+  }, [])
 
   return (
     <AuthContext.Provider value={{ utente, accedi, esci, caricamento }}>
@@ -47,3 +47,5 @@ export function useAuth() {
   if (!ctx) throw new Error('useAuth deve essere usato dentro un AuthProvider')
   return ctx
 }
+
+

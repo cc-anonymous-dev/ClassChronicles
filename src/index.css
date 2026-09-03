@@ -50,6 +50,57 @@
   --space-xl: 40px;
 }
 
+[data-tema="chiaro"] {
+  --color-background: #f7f9f8;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #ffffff;
+  --color-surface-container: #f0f3f1;
+  --color-surface-container-high: #e2e7e4;
+  --color-surface-container-highest: #d5dcd8;
+  --color-surface-bright: #ffffff;
+
+  --color-on-surface: #111614;
+  --color-on-surface-variant: #2e3833;
+
+  --color-outline: #54635b;
+  --color-outline-variant: #1a1a1a;
+
+  --color-primary: #004d39;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #00ffc2;
+  --color-on-primary-container: #00271c;
+  --color-primary-fixed: #007055;
+  --color-primary-fixed-dim: #004d39;
+
+  --color-secondary: #006877;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #b5f0ff;
+
+  --color-tertiary: #870042;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #c30063;
+  --color-on-tertiary-container: #ffffff;
+
+  --color-error: #c62828;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #5c0006;
+  --color-error-strong: #b71c1c;
+}
+
+[data-tema="chiaro"] .griglia-decorativa {
+  opacity: 0.05;
+  background-image:
+    linear-gradient(#000 1px, transparent 1px),
+    linear-gradient(90deg, #000 1px, transparent 1px);
+}
+
+[data-tema="chiaro"] .nav-tab.attivo {
+  color: #00271c;
+  background-color: var(--color-primary-container);
+  box-shadow: 3px 3px 0px 0px #1a1a1a;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -447,6 +498,48 @@ button, input, textarea {
 
 .nav-tab-icona {
   font-size: 22px;
+}
+
+/* ---------- Layout Desktop: Barra di Navigazione a Destra ---------- */
+@media (min-width: 768px) {
+  .layout-app {
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    grid-template-rows: 64px 1fr;
+    grid-template-areas:
+      "header header"
+      "main   nav";
+  }
+
+  .app-header {
+    grid-area: header;
+  }
+
+  .app-main {
+    grid-area: main;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .app-bottom-nav {
+    grid-area: nav;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-sm);
+    border-top: none;
+    border-left: 2px solid var(--color-outline-variant);
+  }
+
+  .nav-tab {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 4px;
+  }
 }
 
 /* ---------- Card Post nel Feed ---------- */
