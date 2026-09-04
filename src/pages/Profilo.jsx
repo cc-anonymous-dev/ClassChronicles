@@ -6,6 +6,7 @@ import LayoutApp from '../components/LayoutApp'
 import GuidaAggiungiHome from '../components/GuidaAggiungiHome'
 
 function dataFormattata(dataIso) {
+  if (!dataIso) return ''
   return new Date(dataIso).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
@@ -19,6 +20,7 @@ export default function Profilo() {
   const navigate = useNavigate()
   const { utente, esci } = useAuth()
   const [statistiche, setStatistiche] = useState(null)
+  const [datiClasse, setDatiClasse] = useState(null)
   const [caricamento, setCaricamento] = useState(true)
   const [errore, setErrore] = useState('')
 
@@ -26,7 +28,12 @@ export default function Profilo() {
     setErrore('')
     try {
       const risposta = await chiamaFunzione('profilo-statistiche', { utente_id: utente.id })
-      setStatistiche(risposta.statistiche)
+      setStatistiche(risposta.statistiche || risposta)
+      if (risposta.classe || risposta.statistiche?.classe || risposta.nome_classe || risposta.statistiche?.nome_classe || risposta.statistiche?.classe_nome) {
+        setDatiClasse({
+          nome: risposta.classe?.nome_classe || risposta.statistiche?.nome_classe || risposta.nome_classe || risposta.statistiche?.classe_nome,
+        })
+      }
     } catch (err) {
       setErrore(err.message)
     } finally {
@@ -37,6 +44,8 @@ export default function Profilo() {
   useEffect(() => {
     caricaStatistiche()
   }, [caricaStatistiche])
+
+  const nomeClasse = datiClasse?.nome || statistiche?.nome_classe || statistiche?.classe_nome || utente?.nome_classe
 
   function gestisciUscita() {
     esci()
@@ -73,14 +82,34 @@ export default function Profilo() {
           <>
             <div className="profilo-stats-griglia">
               <div className="profilo-stat-card">
-                <span className="profilo-stat-numero">{statistiche.numero_cronache_pubblicate}</span>
+                <span className="profilo-stat-numero">{statistiche.numero_cronache_pubblicate ?? 0}</span>
                 <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>Cronache</span>
               </div>
               <div className="profilo-stat-card">
-                <span className="profilo-stat-numero">{statistiche.totale_mi_piace}</span>
+                <span className="profilo-stat-numero">{statistiche.totale_mi_piace ?? 0}</span>
                 <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>Mi Piace Ricevuti</span>
               </div>
             </div>
+
+            {/* Visualizzazione Nome Classe (Senza Codice di Sicurezza) */}
+            {nomeClasse && (
+              <div className="neo-card">
+                <div className="neo-card-header">
+                  <span className="text-label-caps" style={{ color: 'var(--color-secondary)' }}>
+                    🏫 Classe {utente.ruolo === 'root' ? '(Fondata da te)' : (utente.ruolo === 'admin' ? '(Amministrata da te)' : '')}
+                  </span>
+                  <span aria-hidden="true">📍</span>
+                </div>
+                <div>
+                  <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)', display: 'block', fontSize: 12 }}>
+                    Nome Classe
+                  </span>
+                  <span className="text-headline-md" style={{ color: 'var(--color-primary-fixed-dim)' }}>
+                    {nomeClasse}
+                  </span>
+                </div>
+              </div>
+            )}
 
             <div className="neo-card">
               <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>Membro dal</span>

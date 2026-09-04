@@ -207,11 +207,144 @@ function FormEntraClasse({ nicknamePreview }) {
 
 function SchermataCodiceGenerato({ nomeClasse, codiceClasse, nickname, onContinua }) {
   const [copiato, setCopiato] = useState(false)
+  const [invitoCopiato, setInvitoCopiato] = useState(false)
+  const [salvato, setSalvato] = useState(false)
 
   function copiaCodice() {
     navigator.clipboard?.writeText(codiceClasse)
     setCopiato(true)
     setTimeout(() => setCopiato(false), 2000)
+  }
+
+  async function condividiInvito() {
+    const testoInvito = `Ti va di iscriverti al nostro diario di classe anonimo? 🛡️
+
+Si chiama Class Chronicles: puoi scrivere confessioni, pettegolezzi e sfoghi in totale anonimato — nessuno può risalire a chi scrive, nemmeno io.
+
+Per entrare:
+1. Vai su ${window.location.origin}
+2. Scegli "Entra in Classe"
+3. Usa questo codice: ${codiceClasse}
+
+Classe: ${nomeClasse}`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Class Chronicles',
+          text: testoInvito,
+        })
+        return
+      } catch (err) {
+        if (err.name === 'AbortError') return
+      }
+    }
+
+    try {
+      await navigator.clipboard?.writeText(testoInvito)
+      setInvitoCopiato(true)
+      setTimeout(() => setInvitoCopiato(false), 2000)
+    } catch {
+      // Fallback ignorato
+    }
+  }
+
+  async function salvaImmagine() {
+    const W = 600
+    const H = 380
+    const canvas = document.createElement('canvas')
+    canvas.width = W
+    canvas.height = H
+    const ctx = canvas.getContext('2d')
+
+    // Sfondo scuro
+    ctx.fillStyle = '#131313'
+    ctx.fillRect(0, 0, W, H)
+
+    // Bordo esterno
+    ctx.strokeStyle = '#3f5349'
+    ctx.lineWidth = 2
+    ctx.strokeRect(8, 8, W - 16, H - 16)
+
+    // Titolo app
+    ctx.fillStyle = '#83958c'
+    ctx.font = '700 13px monospace'
+    ctx.textAlign = 'center'
+    ctx.fillText('CLASS CHRONICLES', W / 2, 45)
+
+    // Separatore
+    ctx.strokeStyle = '#2a3830'
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(40, 58)
+    ctx.lineTo(W - 40, 58)
+    ctx.stroke()
+
+    // Nome classe
+    ctx.fillStyle = '#a8c5b5'
+    ctx.font = '600 18px sans-serif'
+    ctx.fillText(`Classe: ${nomeClasse}`, W / 2, 95)
+
+    // Avviso
+    ctx.fillStyle = '#cf6679'
+    ctx.font = '700 12px sans-serif'
+    ctx.fillText('⚠  CODICE CLASSE — TIENILO SEGRETO', W / 2, 135)
+
+    // Sfondo codice
+    ctx.fillStyle = '#1e2e27'
+    ctx.fillRect(60, 150, W - 120, 90)
+    ctx.strokeStyle = '#cf6679'
+    ctx.lineWidth = 2
+    ctx.strokeRect(60, 150, W - 120, 90)
+
+    // Codice classe
+    ctx.fillStyle = '#a8e6c6'
+    ctx.font = '700 56px monospace'
+    ctx.letterSpacing = '0.2em'
+    ctx.fillText(codiceClasse, W / 2, 215)
+
+    // Istruzione
+    ctx.fillStyle = '#83958c'
+    ctx.font = '500 13px sans-serif'
+    ctx.fillText('Per entrare nella classe vai su:', W / 2, 275)
+
+    ctx.fillStyle = '#7dcfb6'
+    ctx.font = '600 14px monospace'
+    ctx.fillText(window.location.origin, W / 2, 298)
+
+    ctx.fillStyle = '#3f5349'
+    ctx.font = '500 12px sans-serif'
+    ctx.fillText('Condividi solo con i tuoi compagni di classe.', W / 2, 340)
+
+    // Genera e salva/condividi immagine
+    canvas.toBlob(async (blob) => {
+      if (!blob) return
+
+      // Prova condivisione nativa (mobile)
+      if (navigator.share && navigator.canShare?.({ files: [new File([blob], 'codice-classe.png', { type: 'image/png' })] })) {
+        try {
+          await navigator.share({
+            title: 'Class Chronicles — Codice Classe',
+            files: [new File([blob], 'codice-classe.png', { type: 'image/png' })],
+          })
+          setSalvato(true)
+          setTimeout(() => setSalvato(false), 2000)
+          return
+        } catch (err) {
+          if (err.name === 'AbortError') return
+        }
+      }
+
+      // Fallback: download diretto
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `codice-classe-${codiceClasse}.png`
+      a.click()
+      URL.revokeObjectURL(url)
+      setSalvato(true)
+      setTimeout(() => setSalvato(false), 2000)
+    }, 'image/png')
   }
 
   return (
@@ -227,26 +360,52 @@ function SchermataCodiceGenerato({ nomeClasse, codiceClasse, nickname, onContinu
           backgroundColor: 'var(--color-surface-container-lowest)',
           border: '2px solid var(--color-error)',
           padding: 'var(--space-md)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-sm)',
         }}
       >
         <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>
           ⚠️ Salva questo Codice Classe ORA
         </span>
-        <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: '8px 0' }}>
+        <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: '4px 0' }}>
           Non potrai più vederlo dopo aver lasciato questa schermata. Condividilo solo con i tuoi compagni di classe.
         </p>
         <div
           style={{
             fontSize: 32, fontWeight: 700, letterSpacing: '0.15em',
             color: 'var(--color-primary-fixed)', fontFamily: 'monospace',
-            padding: 'var(--space-sm)',
+            padding: 'var(--space-xs)',
           }}
         >
           {codiceClasse}
         </div>
-        <button type="button" className="btn-brutalist btn-secondary-outline" onClick={copiaCodice}>
-          {copiato ? '✅ Copiato!' : '📋 Copia Codice'}
-        </button>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="btn-brutalist btn-secondary-outline"
+            onClick={copiaCodice}
+            style={{ flex: 1, minWidth: 130 }}
+          >
+            {copiato ? '✅ Copiato!' : '📋 Copia Codice'}
+          </button>
+          <button
+            type="button"
+            className="btn-brutalist btn-primary-container"
+            onClick={condividiInvito}
+            style={{ flex: 1, minWidth: 130 }}
+          >
+            {invitoCopiato ? '✅ Invito Copiato!' : '📤 Condividi Invito'}
+          </button>
+          <button
+            type="button"
+            className="btn-brutalist btn-secondary-outline"
+            onClick={salvaImmagine}
+            style={{ flex: 1, minWidth: 130 }}
+          >
+            {salvato ? '✅ Salvato!' : '🖼️ Salva Immagine'}
+          </button>
+        </div>
       </div>
 
       <button type="button" className="btn-brutalist btn-primary" onClick={onContinua}>
