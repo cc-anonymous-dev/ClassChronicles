@@ -91,7 +91,7 @@ function FormEntraClasse({ nicknamePreview }) {
     setInviando(true)
     try {
       const risposta = await chiamaFunzione('registrazione', {
-        codice_classe: codiceClasse.trim(),
+        codice_classe: codiceClasse.trim().toUpperCase(),
         password,
         nickname_richiesto: nicknamePreview,
       })
@@ -147,7 +147,7 @@ function FormEntraClasse({ nicknamePreview }) {
               placeholder=" "
               autoComplete="off"
               value={codiceClasse}
-              onChange={(e) => setCodiceClasse(e.target.value)}
+              onChange={(e) => setCodiceClasse(e.target.value.toUpperCase())}
               style={{ textTransform: 'uppercase' }}
               disabled={inviando}
             />

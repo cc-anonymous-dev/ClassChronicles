@@ -33,7 +33,7 @@ export default function Accedi() {
     setInviando(true)
     try {
       const risposta = await chiamaFunzione('login', {
-        codice_classe: codiceClasse.trim(),
+        codice_classe: codiceClasse.trim().toUpperCase(),
         nickname: nickname.trim(),
         password,
       })
@@ -145,7 +145,7 @@ export default function Accedi() {
                 placeholder=" "
                 autoComplete="off"
                 value={codiceClasse}
-                onChange={(e) => setCodiceClasse(e.target.value)}
+                onChange={(e) => setCodiceClasse(e.target.value.toUpperCase())}
                 style={{ textTransform: 'uppercase' }}
                 disabled={inviando}
               />
