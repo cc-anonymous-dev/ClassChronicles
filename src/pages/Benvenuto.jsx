@@ -205,117 +205,6 @@ function FormEntraClasse({ nicknamePreview }) {
   )
 }
 
-const TUTTE_LE_CLASSI = []
-for (let n = 1; n <= 5; n++) {
-  for (let l = 0; l < 26; l++) {
-    TUTTE_LE_CLASSI.push(`${n}${String.fromCharCode(65 + l)}`)
-  }
-}
-
-function SelettoreClasseRicerca({ valore, onChange, disabled }) {
-  const [aperto, setAperto] = useState(false)
-  const [ricerca, setRicerca] = useState('')
-
-  const filtrate = TUTTE_LE_CLASSI.filter((c) =>
-    c.toLowerCase().includes(ricerca.toLowerCase())
-  )
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <div className="campo-input-wrap">
-        <input
-          type="text"
-          className="input-brutalist"
-          placeholder=" "
-          value={aperto ? ricerca : valore}
-          onChange={(e) => {
-            setRicerca(e.target.value)
-            setAperto(true)
-            if (!e.target.value) onChange('')
-          }}
-          onFocus={() => {
-            setAperto(true)
-            setRicerca('')
-          }}
-          onBlur={() => {
-            setTimeout(() => setAperto(false), 200)
-          }}
-          disabled={disabled}
-        />
-        <label className="campo-label">Cerca o scegli la classe (es. 3A)</label>
-      </div>
-
-      {aperto && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            maxHeight: 220,
-            overflowY: 'auto',
-            backgroundColor: 'var(--color-surface-container-low)',
-            border: '2px solid var(--color-outline-variant)',
-            borderTop: 'none',
-            zIndex: 10,
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(60px, 1fr))',
-            gap: 'var(--space-xs)',
-            padding: 'var(--space-sm)',
-            boxShadow: '4px 4px 0px 0px var(--color-background)',
-          }}
-        >
-          {filtrate.map((c) => (
-            <button
-              key={c}
-              type="button"
-              style={{
-                padding: 'var(--space-sm) 0',
-                backgroundColor:
-                  valore === c
-                    ? 'var(--color-primary-fixed-dim)'
-                    : 'var(--color-surface-container)',
-                color:
-                  valore === c
-                    ? 'var(--color-on-primary)'
-                    : 'var(--color-on-surface)',
-                border: '2px solid',
-                borderColor:
-                  valore === c
-                    ? 'var(--color-primary-fixed-dim)'
-                    : 'transparent',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-family)',
-                fontWeight: 600,
-                textAlign: 'center',
-                transition: 'all 0.1s',
-              }}
-              onClick={() => {
-                onChange(c)
-                setAperto(false)
-              }}
-            >
-              {c}
-            </button>
-          ))}
-          {filtrate.length === 0 && (
-            <div
-              style={{
-                gridColumn: '1 / -1',
-                padding: 'var(--space-md)',
-                textAlign: 'center',
-                color: 'var(--color-on-surface-variant)',
-              }}
-            >
-              Nessuna classe trovata
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
 function SchermataCodiceGenerato({ nomeClasse, codiceClasse, nickname, onContinua }) {
   const [copiato, setCopiato] = useState(false)
 
@@ -366,11 +255,14 @@ function SchermataCodiceGenerato({ nomeClasse, codiceClasse, nickname, onContinu
     </div>
   )
 }
+
 function FormCreaClasse({ nicknamePreview }) {
   const navigate = useNavigate()
   const { accedi } = useAuth()
 
-  const [nomeClasseSelezionato, setNomeClasseSelezionato] = useState('')
+  const [testoLibero, setTestoLibero] = useState('')
+  const [numeroClasse, setNumeroClasse] = useState('')
+  const [letteraClasse, setLetteraClasse] = useState('')
   const [password, setPassword] = useState('')
   const [accettaResponsabilita, setAccettaResponsabilita] = useState(false)
   const [accettaRegole, setAccettaRegole] = useState(false)
@@ -382,8 +274,27 @@ function FormCreaClasse({ nicknamePreview }) {
     e.preventDefault()
     setErrore('')
 
-    if (!nomeClasseSelezionato || !password) {
-      setErrore('Compila tutti i campi per creare la classe.')
+    const tLibero = testoLibero.trim()
+    const haTestoLibero = Boolean(tLibero)
+    const haNumeroELettera = Boolean(numeroClasse && letteraClasse)
+    const haSoloNumeroOLettera = (numeroClasse && !letteraClasse) || (!numeroClasse && letteraClasse)
+
+    if (!haTestoLibero && !haNumeroELettera) {
+      if (haSoloNumeroOLettera) {
+        setErrore('Per identificare la classe con numero e sezione devi selezionarli entrambi (es. 3 e C).')
+      } else {
+        setErrore('Indica il nome della classe: inserisci un nome libero, seleziona numero e sezione (es. 3C), o entrambi.')
+      }
+      return
+    }
+
+    if (haSoloNumeroOLettera && !haTestoLibero) {
+      setErrore('Per identificare la classe con numero e sezione devi selezionarli entrambi (es. 3 e C).')
+      return
+    }
+
+    if (!password) {
+      setErrore('Inserisci una password per proteggere la classe.')
       return
     }
     if (password.length < 6) {
@@ -402,7 +313,9 @@ function FormCreaClasse({ nicknamePreview }) {
     setInviando(true)
     try {
       const risposta = await chiamaFunzione('crea-classe', {
-        nome_classe: nomeClasseSelezionato,
+        testo_libero: tLibero || undefined,
+        numero_classe: numeroClasse || undefined,
+        lettera_classe: letteraClasse || undefined,
         password,
       })
 
@@ -456,20 +369,78 @@ function FormCreaClasse({ nicknamePreview }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
           <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
-            Seleziona la tua classe
+            Identifica la tua classe
           </span>
-          <div style={{ position: 'relative' }}>
-            <SelettoreClasseRicerca
-              valore={nomeClasseSelezionato}
-              onChange={setNomeClasseSelezionato}
+
+          <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-on-surface-variant)' }}>
+            Dai un nome alla tua classe: scrivi un nome libero, seleziona numero e sezione (es. 3C), oppure entrambi insieme.
+          </p>
+
+          <div className="campo-input-wrap">
+            <input
+              id="testo-libero-classe"
+              className="input-brutalist"
+              type="text"
+              placeholder=" "
+              maxLength={25}
+              value={testoLibero}
+              onChange={(e) => setTestoLibero(e.target.value)}
               disabled={inviando}
             />
+            <label className="campo-label" htmlFor="testo-libero-classe">
+              Nome Libero (opzionale, es. Liceo Rossi)
+            </label>
           </div>
-          {nomeClasseSelezionato && (
-            <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-primary-fixed-dim)' }}>
-              Classe selezionata: <strong>{nomeClasseSelezionato}</strong>
-            </p>
-          )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
+            <div className="campo-input-wrap">
+              <select
+                id="numero-classe"
+                className="input-brutalist"
+                value={numeroClasse}
+                onChange={(e) => setNumeroClasse(e.target.value)}
+                disabled={inviando}
+                style={{ cursor: 'pointer' }}
+              >
+                <option value="">— Nessuno —</option>
+                <option value="1">1ª</option>
+                <option value="2">2ª</option>
+                <option value="3">3ª</option>
+                <option value="4">4ª</option>
+                <option value="5">5ª</option>
+              </select>
+              <label
+                className="campo-label"
+                htmlFor="numero-classe"
+                style={{ transform: 'translateY(-24px) scale(0.85)', color: 'var(--color-primary-fixed-dim)' }}
+              >
+                Anno (opzionale)
+              </label>
+            </div>
+
+            <div className="campo-input-wrap">
+              <select
+                id="lettera-classe"
+                className="input-brutalist"
+                value={letteraClasse}
+                onChange={(e) => setLetteraClasse(e.target.value)}
+                disabled={inviando}
+                style={{ cursor: 'pointer' }}
+              >
+                <option value="">— Nessuna —</option>
+                {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((l) => (
+                  <option key={l} value={l}>{l}</option>
+                ))}
+              </select>
+              <label
+                className="campo-label"
+                htmlFor="lettera-classe"
+                style={{ transform: 'translateY(-24px) scale(0.85)', color: 'var(--color-primary-fixed-dim)' }}
+              >
+                Sezione (opzionale)
+              </label>
+            </div>
+          </div>
 
           <div className="campo-input-wrap">
             <input
