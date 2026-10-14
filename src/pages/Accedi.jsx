@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import BannerFeedback from '../components/BannerFeedback'
 
 export default function Accedi() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { accedi, utente, caricamento } = useAuth()
 
@@ -26,7 +28,7 @@ export default function Accedi() {
     setErrore('')
 
     if (!codiceClasse.trim() || !nickname.trim() || !password) {
-      setErrore('Compila tutti i campi per accedere.')
+      setErrore(t('accedi.compila_campi'))
       return
     }
 
@@ -89,7 +91,7 @@ export default function Accedi() {
           >
             🛡️
           </div>
-          <h1 className="text-display-lg" style={{ margin: 0 }}>CLASS CHRONICLES</h1>
+          <h1 className="text-display-lg" style={{ margin: 0 }}>{t('accedi.titolo')}</h1>
           <p
             className="text-mono-data"
             style={{
@@ -99,7 +101,7 @@ export default function Accedi() {
               letterSpacing: '0.1em',
             }}
           >
-            Terminale di Accesso Sicuro
+            {t('accedi.terminale')}
           </p>
         </div>
 
@@ -134,7 +136,7 @@ export default function Accedi() {
                 onChange={(e) => setNickname(e.target.value)}
                 disabled={inviando}
               />
-              <label className="campo-label" htmlFor="nickname-login">Nickname Anonimo</label>
+              <label className="campo-label" htmlFor="nickname-login">{t('accedi.nickname')}</label>
             </div>
 
             <div className="campo-input-wrap" style={{ order: 1 }}>
@@ -149,7 +151,7 @@ export default function Accedi() {
                 style={{ textTransform: 'uppercase' }}
                 disabled={inviando}
               />
-              <label className="campo-label" htmlFor="codice-classe-login">Codice Classe</label>
+              <label className="campo-label" htmlFor="codice-classe-login">{t('accedi.codice_classe')}</label>
             </div>
 
             <div className="campo-input-wrap" style={{ order: 3 }}>
@@ -164,7 +166,7 @@ export default function Accedi() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={inviando}
               />
-              <label className="campo-label" htmlFor="password-login">Chiave di Accesso</label>
+              <label className="campo-label" htmlFor="password-login">{t('accedi.chiave_accesso')}</label>
             </div>
 
             {errore && (
@@ -184,7 +186,7 @@ export default function Accedi() {
               }}
               disabled={inviando}
             >
-              {inviando ? <span className="spinner" aria-hidden="true" /> : <>Accedi ↪</>}
+              {inviando ? <span className="spinner" aria-hidden="true" /> : <>{t('accedi.btn_accedi')}</>}
             </button>
 
             <div
@@ -199,10 +201,10 @@ export default function Accedi() {
                 style={{ color: 'var(--color-on-surface-variant)' }}
                 onClick={() => navigate('/benvenuto')}
               >
-                Registrati
+                {t('accedi.registrati')}
               </button>
               <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
-                🟢 Sistema Online
+                {t('accedi.sistema_online')}
               </span>
             </div>
           </div>

@@ -1,36 +1,40 @@
 import { useState } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../lib/AuthContext'
 
 const CHIAVE_ONBOARDING_VISTO = 'classchronicles_onboarding_visto'
 
-const STEP = [
-  {
-    icona: '🛡️',
-    titolo: 'Benvenuto in Class Chronicles',
-    testo: 'Il diario digitale anonimo della tua classe. Qui puoi raccontare, ridere e leggere le cronache dei tuoi compagni, senza mai rivelare chi sei davvero.',
-  },
-  {
-    icona: '🔒',
-    titolo: 'Anonimato Vero',
-    testo: 'Ti registri solo con un nickname generato a caso e una password. Nessun nome, nessuna email, nessun numero di telefono. Nemmeno l\'Admin della tua classe può risalire alla tua identità.',
-  },
-  {
-    icona: '📜',
-    titolo: 'Le Regole Contano',
-    testo: 'Niente nomi veri, niente insulti, niente contenuti pericolosi. Ogni cronaca passa da un filtro automatico e da un Admin prima di essere pubblicata. Le regole complete sono sempre disponibili dall\'icona ⚠️ in alto.',
-  },
-  {
-    icona: '🤝',
-    titolo: 'Una Responsabilità Condivisa',
-    testo: 'Questo spazio funziona solo se lo rispettiamo tutti. Segnala ciò che non va, chiedi la rimozione di ciò in cui ti riconosci, e ricorda: dietro ogni nickname c\'è una persona vera.',
-  },
-]
+const ICONE_STEP = ['🛡️', '🔒', '📜', '🤝']
 
 export default function Onboarding() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { utente, caricamento } = useAuth()
   const [stepAttuale, setStepAttuale] = useState(0)
+
+  const steps = [
+    {
+      icona: ICONE_STEP[0],
+      titolo: t('onboarding.step_0_titolo'),
+      testo: t('onboarding.step_0_testo'),
+    },
+    {
+      icona: ICONE_STEP[1],
+      titolo: t('onboarding.step_1_titolo'),
+      testo: t('onboarding.step_1_testo'),
+    },
+    {
+      icona: ICONE_STEP[2],
+      titolo: t('onboarding.step_2_titolo'),
+      testo: t('onboarding.step_2_testo'),
+    },
+    {
+      icona: ICONE_STEP[3],
+      titolo: t('onboarding.step_3_titolo'),
+      testo: t('onboarding.step_3_testo'),
+    },
+  ]
 
   if (caricamento) return null
 
@@ -47,15 +51,15 @@ export default function Onboarding() {
   }
 
   function prossimoStep() {
-    if (stepAttuale < STEP.length - 1) {
+    if (stepAttuale < steps.length - 1) {
       setStepAttuale(stepAttuale + 1)
     } else {
       completaOnboarding()
     }
   }
 
-  const step = STEP[stepAttuale]
-  const ultimoStep = stepAttuale === STEP.length - 1
+  const step = steps[stepAttuale]
+  const ultimoStep = stepAttuale === steps.length - 1
 
   return (
     <div className="pagina">
@@ -72,18 +76,18 @@ export default function Onboarding() {
         </div>
 
         <div className="onboarding-puntini">
-          {STEP.map((_, i) => (
+          {steps.map((_, i) => (
             <span key={i} className={`onboarding-puntino ${i === stepAttuale ? 'attivo' : ''}`} />
           ))}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
           <button type="button" className="btn-brutalist btn-primary" onClick={prossimoStep}>
-            {ultimoStep ? 'Ho Capito, Iniziamo →' : 'Avanti'}
+            {ultimoStep ? t('onboarding.btn_iniziamo') : t('onboarding.btn_avanti')}
           </button>
           {!ultimoStep && (
             <button type="button" className="link-testuale" style={{ textAlign: 'center' }} onClick={completaOnboarding}>
-              Salta introduzione
+              {t('onboarding.salta')}
             </button>
           )}
         </div>

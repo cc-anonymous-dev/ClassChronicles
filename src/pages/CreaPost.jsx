@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
@@ -17,6 +18,7 @@ const DOMANDE_SPUNTO = [
 ]
 
 function SpuntoScrittura({ onScegliSpunto, disabled }) {
+  const { t } = useTranslation()
   const [aperto, setAperto] = useState(false)
 
   return (
@@ -31,14 +33,14 @@ function SpuntoScrittura({ onScegliSpunto, disabled }) {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: 0,
         }}
       >
-        <span>💡 Non sai cosa scrivere?</span>
+        <span>{t('crea_post.spunto_titolo')}</span>
         <span aria-hidden="true">{aperto ? '▲' : '▼'}</span>
       </button>
 
       {aperto && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
           <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-on-surface-variant)' }}>
-            Tocca una domanda per iniziare a scrivere da lì (opzionale):
+            {t('crea_post.spunto_sotto')}
           </p>
           {DOMANDE_SPUNTO.map((domanda) => (
             <button
@@ -59,6 +61,7 @@ function SpuntoScrittura({ onScegliSpunto, disabled }) {
 }
 
 export default function CreaPost() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { utente } = useAuth()
 
@@ -88,7 +91,7 @@ export default function CreaPost() {
     setTestoNonConsentito(false)
 
     if (!titolo.trim() || !contenuto.trim()) {
-      setErrore('Inserisci sia un titolo che il contenuto della cronaca.')
+      setErrore(t('crea_post.errore_campi'))
       return
     }
 
@@ -148,7 +151,7 @@ export default function CreaPost() {
         </div>
       </div>
 
-      <h2 className="text-headline-md" style={{ margin: 0 }}>Nuova Cronaca</h2>
+      <h2 className="text-headline-md" style={{ margin: 0 }}>{t('crea_post.titolo')}</h2>
 
       <SpuntoScrittura onScegliSpunto={gestisciScegliSpunto} disabled={inviando} />
 
@@ -164,20 +167,20 @@ export default function CreaPost() {
             onChange={(e) => { setTitolo(e.target.value); setTestoNonConsentito(false) }}
             disabled={inviando}
           />
-          <label className="campo-label" htmlFor="titolo-post">Titolo della cronaca</label>
+          <label className="campo-label" htmlFor="titolo-post">{t('crea_post.campo_titolo')}</label>
         </div>
 
         <div>
           <textarea
             className="textarea-brutalist"
-            placeholder="Scrivi qui la tua confessione, pettegolezzo o sfogo. Il vuoto sta ascoltando..."
+            placeholder={t('crea_post.placeholder_textarea')}
             maxLength={LIMITE_CARATTERI}
             value={contenuto}
             onChange={(e) => { setContenuto(e.target.value); setTestoNonConsentito(false) }}
             disabled={inviando}
           />
           <div className="textarea-footer">
-            <span>🟢 Filtro: Attivo</span>
+            <span>{t('crea_post.filtro_attivo')}</span>
             <span>{contenuto.length} / {LIMITE_CARATTERI}</span>
           </div>
         </div>
@@ -186,8 +189,7 @@ export default function CreaPost() {
           <div className="messaggio-errore" role="alert" style={{ borderWidth: 2 }}>
             <span aria-hidden="true">🚫</span>
             <span>
-              <strong>Non puoi pubblicare questa cronaca.</strong> Il testo contiene parole o
-              espressioni non consentite dalle regole della classe. Modifica il contenuto per continuare.
+              <strong>{t('crea_post.errore_non_consentito')}</strong>
             </span>
           </div>
         )}
@@ -211,7 +213,7 @@ export default function CreaPost() {
           className="btn-brutalist btn-primary-container"
           disabled={inviando || testoNonConsentito}
         >
-          {inviando ? <span className="spinner" aria-hidden="true" /> : <>Invia per Revisione ➤</>}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : <>{t('crea_post.btn_invia')}</>}
         </button>
       </form>
     </LayoutApp>

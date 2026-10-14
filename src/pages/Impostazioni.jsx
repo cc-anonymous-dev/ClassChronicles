@@ -1,21 +1,58 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { useZoom } from '../lib/ZoomContext'
 import { useTema } from '../lib/TemaContext'
+import { useColore } from '../lib/ColoreContext'
 import LayoutApp from '../components/LayoutApp'
 import BannerFeedback from '../components/BannerFeedback'
 
+function ControlloLingua() {
+  const { t, i18n } = useTranslation()
+  const linguaAttuale = i18n.language?.startsWith('en') ? 'en' : 'it'
+
+  return (
+    <div className="neo-card">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+        <span className="text-body-md" style={{ fontWeight: 600 }}>{t('impostazioni.lingua_titolo')}</span>
+        <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: 0 }}>
+          {t('impostazioni.lingua_desc')}
+        </p>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)', marginTop: 4 }}>
+          <button
+            type="button"
+            className={`btn-brutalist ${linguaAttuale === 'it' ? 'btn-primary-container' : 'btn-secondary-outline'}`}
+            style={{ flex: 1, padding: '10px 14px', fontSize: 14 }}
+            onClick={() => i18n.changeLanguage('it')}
+          >
+            {t('impostazioni.lingua_it')} {linguaAttuale === 'it' && t('impostazioni.attivo')}
+          </button>
+          <button
+            type="button"
+            className={`btn-brutalist ${linguaAttuale === 'en' ? 'btn-primary-container' : 'btn-secondary-outline'}`}
+            style={{ flex: 1, padding: '10px 14px', fontSize: 14 }}
+            onClick={() => i18n.changeLanguage('en')}
+          >
+            {t('impostazioni.lingua_en')} {linguaAttuale === 'en' && t('impostazioni.attivo')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ControlloTema() {
+  const { t } = useTranslation()
   const { tema, impostaTemaScuro, impostaTemaChiaro } = useTema()
 
   return (
     <div className="neo-card">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
-        <span className="text-body-md" style={{ fontWeight: 600 }}>Tema Interfaccia</span>
+        <span className="text-body-md" style={{ fontWeight: 600 }}>{t('impostazioni.tema_titolo')}</span>
         <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: 0 }}>
-          Scegli l'aspetto visivo di Class Chronicles. Il tema scuro è quello predefinito.
+          {t('impostazioni.tema_desc')}
         </p>
         <div style={{ display: 'flex', gap: 'var(--space-sm)', marginTop: 4 }}>
           <button
@@ -24,7 +61,7 @@ function ControlloTema() {
             style={{ flex: 1, padding: '10px 14px', fontSize: 14 }}
             onClick={impostaTemaScuro}
           >
-            🌙 Scuro {tema === 'scuro' && '(Attivo)'}
+            {t('impostazioni.tema_scuro')} {tema === 'scuro' && t('impostazioni.attivo')}
           </button>
           <button
             type="button"
@@ -32,8 +69,62 @@ function ControlloTema() {
             style={{ flex: 1, padding: '10px 14px', fontSize: 14 }}
             onClick={impostaTemaChiaro}
           >
-            ☀️ Chiaro {tema === 'chiaro' && '(Attivo)'}
+            {t('impostazioni.tema_chiaro')} {tema === 'chiaro' && t('impostazioni.attivo')}
           </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ControlloColore() {
+  const { t } = useTranslation()
+  const { colore, impostaColore, ripristinaColore, COLORE_DEFAULT } = useColore()
+
+  return (
+    <div className="neo-card">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className="text-body-md" style={{ fontWeight: 600 }}>{t('impostazioni.colore_titolo')}</span>
+          {colore.toLowerCase() !== COLORE_DEFAULT.toLowerCase() && (
+            <button
+              type="button"
+              className="link-testuale"
+              style={{ fontSize: 12, color: 'var(--color-on-surface-variant)' }}
+              onClick={ripristinaColore}
+            >
+              {t('comune.ripristina_predefinito')}
+            </button>
+          )}
+        </div>
+        <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: 0 }}>
+          {t('impostazioni.colore_desc')}
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', marginTop: 4 }}>
+          <input
+            id="picker-colore-interfaccia"
+            type="color"
+            value={colore}
+            onChange={(e) => impostaColore(e.target.value)}
+            style={{
+              width: 50,
+              height: 42,
+              padding: 0,
+              border: '2px solid var(--color-outline-variant)',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              borderRadius: 0,
+            }}
+            aria-label={t('impostazioni.colore_titolo')}
+          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 15, color: 'var(--color-primary-fixed)' }}>
+              {colore.toUpperCase()}
+            </span>
+            <span style={{ fontSize: 12, color: 'var(--color-on-surface-variant)' }}>
+              {colore.toLowerCase() === COLORE_DEFAULT.toLowerCase() ? t('impostazioni.colore_predefinito') : t('impostazioni.colore_personalizzato')}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -169,6 +260,7 @@ function SezioneEliminaAccount({ utente, onEliminato }) {
 }
 
 export default function Impostazioni() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { utente, esci } = useAuth()
 
@@ -180,9 +272,11 @@ export default function Impostazioni() {
   return (
     <LayoutApp>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-        <h2 className="text-headline-md" style={{ margin: 0 }}>Impostazioni</h2>
+        <h2 className="text-headline-md" style={{ margin: 0 }}>{t('impostazioni.titolo')}</h2>
 
+        <ControlloLingua />
         <ControlloTema />
+        <ControlloColore />
         <ControlloZoom />
         <SezioneEliminaAccount utente={utente} onEliminato={gestisciAccountEliminato} />
         

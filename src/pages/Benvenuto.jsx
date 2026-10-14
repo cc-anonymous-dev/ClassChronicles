@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import BannerFeedback from '../components/BannerFeedback'
@@ -206,6 +207,7 @@ function FormEntraClasse({ nicknamePreview }) {
 }
 
 function SchermataCodiceGenerato({ nomeClasse, codiceClasse, nickname, onContinua }) {
+  const { t } = useTranslation()
   const [copiato, setCopiato] = useState(false)
   const [invitoCopiato, setInvitoCopiato] = useState(false)
   const [salvato, setSalvato] = useState(false)
@@ -350,9 +352,9 @@ Classe: ${nomeClasse}`
   return (
     <div className="neo-card" style={{ textAlign: 'center' }}>
       <span style={{ fontSize: 40 }} aria-hidden="true">🎉</span>
-      <h2 className="text-headline-md" style={{ margin: 0 }}>Classe {nomeClasse} Creata!</h2>
+      <h2 className="text-headline-md" style={{ margin: 0 }}>{t('benvenuto.classe_creata', { nomeClasse })}</h2>
       <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)' }}>
-        Sei entrato come <strong style={{ color: 'var(--color-primary-fixed-dim)' }}>{nickname}</strong>, ROOT di questa classe.
+        {t('benvenuto.sei_root', { nickname })}
       </p>
 
       <div
@@ -366,10 +368,10 @@ Classe: ${nomeClasse}`
         }}
       >
         <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>
-          ⚠️ Salva questo Codice Classe ORA
+          {t('benvenuto.salva_codice_ora')}
         </span>
         <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: '4px 0' }}>
-          Non potrai più vederlo dopo aver lasciato questa schermata. Condividilo solo con i tuoi compagni di classe.
+          {t('benvenuto.avviso_codice_perso')}
         </p>
         <div
           style={{
@@ -387,7 +389,7 @@ Classe: ${nomeClasse}`
             onClick={copiaCodice}
             style={{ flex: 1, minWidth: 130 }}
           >
-            {copiato ? '✅ Copiato!' : '📋 Copia Codice'}
+            {copiato ? t('comune.copiato') : t('comune.copia_codice')}
           </button>
           <button
             type="button"
@@ -395,7 +397,7 @@ Classe: ${nomeClasse}`
             onClick={condividiInvito}
             style={{ flex: 1, minWidth: 130 }}
           >
-            {invitoCopiato ? '✅ Invito Copiato!' : '📤 Condividi Invito'}
+            {invitoCopiato ? t('comune.invito_copiato') : t('comune.condividi_invito')}
           </button>
           <button
             type="button"
@@ -403,19 +405,20 @@ Classe: ${nomeClasse}`
             onClick={salvaImmagine}
             style={{ flex: 1, minWidth: 130 }}
           >
-            {salvato ? '✅ Salvato!' : '🖼️ Salva Immagine'}
+            {salvato ? t('comune.salvato') : t('comune.salva_immagine')}
           </button>
         </div>
       </div>
 
       <button type="button" className="btn-brutalist btn-primary" onClick={onContinua}>
-        Ho Salvato il Codice, Continua →
+        {t('benvenuto.ho_salvato_codice')}
       </button>
     </div>
   )
 }
 
 function FormCreaClasse({ nicknamePreview }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { accedi } = useAuth()
 
@@ -515,7 +518,7 @@ function FormCreaClasse({ nicknamePreview }) {
       <div className="neo-card">
         <div className="neo-card-header">
           <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
-            Fonda una Nuova Classe
+            {t('benvenuto.fonda_titolo')}
           </span>
           <span aria-hidden="true">👑</span>
         </div>
@@ -528,11 +531,11 @@ function FormCreaClasse({ nicknamePreview }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
           <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
-            Identifica la tua classe
+            {t('benvenuto.identifica_classe')}
           </span>
 
           <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-on-surface-variant)' }}>
-            Dai un nome alla tua classe: scrivi un nome libero, seleziona numero e sezione (es. 3C), oppure entrambi insieme.
+            {t('benvenuto.spiegazione_sigla')}
           </p>
 
           <div className="campo-input-wrap">
@@ -547,7 +550,7 @@ function FormCreaClasse({ nicknamePreview }) {
               disabled={inviando}
             />
             <label className="campo-label" htmlFor="testo-libero-classe">
-              Nome Libero (opzionale, es. Liceo Rossi)
+              {t('benvenuto.campo_nome_libero')}
             </label>
           </div>
 
@@ -561,7 +564,7 @@ function FormCreaClasse({ nicknamePreview }) {
                 disabled={inviando}
                 style={{ cursor: 'pointer' }}
               >
-                <option value="">— Nessuno —</option>
+                <option value="">{t('benvenuto.nessuno')}</option>
                 <option value="1">1ª</option>
                 <option value="2">2ª</option>
                 <option value="3">3ª</option>
@@ -573,7 +576,7 @@ function FormCreaClasse({ nicknamePreview }) {
                 htmlFor="numero-classe"
                 style={{ transform: 'translateY(-24px) scale(0.85)', color: 'var(--color-primary-fixed-dim)' }}
               >
-                Anno (opzionale)
+                {t('benvenuto.anno')}
               </label>
             </div>
 
@@ -586,7 +589,7 @@ function FormCreaClasse({ nicknamePreview }) {
                 disabled={inviando}
                 style={{ cursor: 'pointer' }}
               >
-                <option value="">— Nessuna —</option>
+                <option value="">{t('benvenuto.nessuno')}</option>
                 {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((l) => (
                   <option key={l} value={l}>{l}</option>
                 ))}
@@ -596,7 +599,7 @@ function FormCreaClasse({ nicknamePreview }) {
                 htmlFor="lettera-classe"
                 style={{ transform: 'translateY(-24px) scale(0.85)', color: 'var(--color-primary-fixed-dim)' }}
               >
-                Sezione (opzionale)
+                {t('benvenuto.sezione')}
               </label>
             </div>
           </div>
@@ -612,7 +615,7 @@ function FormCreaClasse({ nicknamePreview }) {
               onChange={(e) => setPassword(e.target.value)}
               disabled={inviando}
             />
-            <label className="campo-label" htmlFor="password-root">La tua Password (min. 6 caratteri)</label>
+            <label className="campo-label" htmlFor="password-root">{t('benvenuto.password_classe')} (min. 6 caratteri)</label>
           </div>
         </div>
 

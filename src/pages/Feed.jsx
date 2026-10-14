@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
@@ -7,6 +8,7 @@ import PostCard from '../components/PostCard'
 import BannerBroadcast from '../components/BannerBroadcast'
 
 export default function Feed() {
+  const { t } = useTranslation()
   const { utente } = useAuth()
   const [post, setPost] = useState([])
   const [broadcast, setBroadcast] = useState([])
@@ -58,7 +60,7 @@ export default function Feed() {
       {caricamento && (
         <div className="stato-vuoto">
           <span className="spinner" aria-hidden="true" style={{ width: 32, height: 32 }} />
-          <p className="text-body-md">Caricamento cronache in corso...</p>
+          <p className="text-body-md">{t('feed.caricamento_cronache')}</p>
         </div>
       )}
 
@@ -72,12 +74,12 @@ export default function Feed() {
       {!caricamento && !errore && post.length === 0 && (
         <div className="stato-vuoto">
           <span style={{ fontSize: 40 }}>📭</span>
-          <h3 className="text-headline-md" style={{ margin: 0 }}>Nessuna cronaca ancora</h3>
+          <h3 className="text-headline-md" style={{ margin: 0 }}>{t('feed.nessuna_cronaca')}</h3>
           <p className="text-body-md">
-            Sii il primo a raccontare qualcosa! Le nuove cronache appariranno qui dopo l'approvazione dell'Admin.
+            {t('feed.nessuna_cronaca_desc')}
           </p>
           <Link to="/crea" className="btn-brutalist btn-primary-container" style={{ width: 'auto', padding: '12px 24px' }}>
-            Scrivi la prima cronaca
+            {t('feed.scrivi_prima')}
           </Link>
         </div>
       )}
@@ -96,7 +98,7 @@ export default function Feed() {
         </div>
       )}
 
-      <Link to="/crea" className="fab-nuovo-post" aria-label="Nuova cronaca">
+      <Link to="/crea" className="fab-nuovo-post" aria-label={t('feed.nuova_cronaca_aria')}>
         ➕
       </Link>
     </LayoutApp>

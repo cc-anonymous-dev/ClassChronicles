@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './lib/AuthContext'
 import { ZoomProvider } from './lib/ZoomContext'
 import { TemaProvider } from './lib/TemaContext'
+import { ColoreProvider } from './lib/ColoreContext'
 import RottaProtetta from './lib/RottaProtetta'
 import Ingresso from './pages/Ingresso'
 import Onboarding from './pages/Onboarding'
@@ -21,7 +22,8 @@ function App() {
     <AuthProvider>
       <ZoomProvider>
         <TemaProvider>
-          <BrowserRouter>
+          <ColoreProvider>
+            <BrowserRouter>
           <Routes>
             <Route path="/" element={<Ingresso />} />
             <Route path="/onboarding" element={<Onboarding />} />
@@ -80,6 +82,7 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
+          </ColoreProvider>
         </TemaProvider>
       </ZoomProvider>
     </AuthProvider>

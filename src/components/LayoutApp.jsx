@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../lib/AuthContext'
 
 /**
@@ -7,6 +8,7 @@ import { useAuth } from '../lib/AuthContext'
  * di navigazione inferiore, come nei mockup.
  */
 export default function LayoutApp({ children }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { utente } = useAuth()
   const puoModerare = utente?.ruolo === 'admin' || utente?.ruolo === 'root'
@@ -17,7 +19,7 @@ export default function LayoutApp({ children }) {
         <div className="app-header-brand">
           <span aria-hidden="true">🛡️</span>
           <h1 className="text-headline-md" style={{ fontSize: 18, margin: 0 }}>
-            CRONACHE DI CLASSE
+            {t('nav.titolo_app')}
           </h1>
         </div>
         <button
@@ -38,21 +40,21 @@ export default function LayoutApp({ children }) {
       <nav className="app-bottom-nav">
         <NavLink to="/feed" className={({ isActive }) => `nav-tab ${isActive ? 'attivo' : ''}`}>
           <span className="nav-tab-icona" aria-hidden="true">📖</span>
-          <span className="text-label-caps">Feed</span>
+          <span className="text-label-caps">{t('nav.feed')}</span>
         </NavLink>
         <NavLink to="/crea" className={({ isActive }) => `nav-tab ${isActive ? 'attivo' : ''}`}>
           <span className="nav-tab-icona" aria-hidden="true">➕</span>
-          <span className="text-label-caps">Crea</span>
+          <span className="text-label-caps">{t('nav.crea')}</span>
         </NavLink>
         {puoModerare && (
           <NavLink to="/admin" className={({ isActive }) => `nav-tab ${isActive ? 'attivo' : ''}`}>
             <span className="nav-tab-icona" aria-hidden="true">🖥️</span>
-            <span className="text-label-caps">Admin</span>
+            <span className="text-label-caps">{t('nav.admin')}</span>
           </NavLink>
         )}
         <NavLink to="/profilo" className={({ isActive }) => `nav-tab ${isActive ? 'attivo' : ''}`}>
           <span className="nav-tab-icona" aria-hidden="true">👤</span>
-          <span className="text-label-caps">Profilo</span>
+          <span className="text-label-caps">{t('nav.profilo')}</span>
         </NavLink>
       </nav>
     </div>
