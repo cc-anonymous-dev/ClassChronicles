@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
+  const { t } = useTranslation()
   const [motivo, setMotivo] = useState('')
   const [inviando, setInviando] = useState(false)
   const [errore, setErrore] = useState('')
@@ -12,7 +14,7 @@ export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
     try {
       await onConferma(motivo.trim())
     } catch (err) {
-      setErrore(err.message || 'Impossibile inviare la segnalazione. Riprova.')
+      setErrore(err.message || t('comune.errore_generico'))
     } finally {
       setInviando(false)
     }
@@ -24,16 +26,16 @@ export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
         <div className="rimozione-modal-header">
           <div>
             <h3 className="text-headline-md" style={{ margin: 0, color: 'var(--color-error)' }}>
-              SEGNALA @{nickname}
+              {t('membri.modal_segnala_titolo', { nickname })}
             </h3>
             <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)', marginTop: 4, fontSize: 14 }}>
-              Descrivi il comportamento scorretto. La segnalazione è anonima.
+              {t('membri.modal_segnala_sottotitolo')}
             </p>
           </div>
           <button
             type="button"
             onClick={onChiudi}
-            aria-label="Chiudi"
+            aria-label={t('comune.chiudi')}
             style={{ background: 'none', border: 'none', color: 'var(--color-on-surface)', fontSize: 20, cursor: 'pointer' }}
           >
             ✕
@@ -50,8 +52,7 @@ export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
         <div className="messaggio-errore" role="note" style={{ backgroundColor: 'var(--color-surface-container-lowest)' }}>
           <span aria-hidden="true">⚠️</span>
           <span>
-            Usa questo strumento solo per comportamenti scorretti reali. Segnalazioni false o
-            usate per vendette personali possono comportare restrizioni del tuo account.
+            {t('membri.modal_segnala_avviso')}
           </span>
         </div>
 
@@ -59,7 +60,7 @@ export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
           <textarea
             className="textarea-brutalist"
             style={{ minHeight: 90 }}
-            placeholder="Es: continua a scrivere messaggi offensivi verso altri compagni..."
+            placeholder={t('membri.modal_segnala_placeholder')}
             value={motivo}
             onChange={(e) => setMotivo(e.target.value)}
             disabled={inviando}
@@ -73,7 +74,7 @@ export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
           onClick={gestisciInvio}
           disabled={inviando || !motivo.trim()}
         >
-          {inviando ? <span className="spinner" aria-hidden="true" /> : <>🚩 Invia Segnalazione</>}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : <>{t('membri.modal_segnala_invia')}</>}
         </button>
       </div>
     </div>

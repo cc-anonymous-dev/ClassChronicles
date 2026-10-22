@@ -1,28 +1,26 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
 import GuidaAggiungiHome from '../components/GuidaAggiungiHome'
 
-function dataFormattata(dataIso) {
+function dataFormattata(dataIso, locale = 'it-IT') {
   if (!dataIso) return ''
-  return new Date(dataIso).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-const ETICHETTE_RUOLO = {
-  root: '👑 ROOT',
-  admin: '🛡️ Admin',
-  studente: 'Studente',
+  return new Date(dataIso).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export default function Profilo() {
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { utente, esci } = useAuth()
   const [statistiche, setStatistiche] = useState(null)
   const [datiClasse, setDatiClasse] = useState(null)
   const [caricamento, setCaricamento] = useState(true)
   const [errore, setErrore] = useState('')
+
+  const localeData = i18n.language?.startsWith('en') ? 'en-US' : 'it-IT'
 
   const caricaStatistiche = useCallback(async () => {
     setErrore('')
@@ -52,6 +50,12 @@ export default function Profilo() {
     navigate('/accedi')
   }
 
+  const etichettaRuolo = utente.ruolo === 'root'
+    ? t('profilo.ruolo_root')
+    : utente.ruolo === 'admin'
+    ? t('profilo.ruolo_admin')
+    : t('profilo.ruolo_studente')
+
   return (
     <LayoutApp>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
@@ -60,7 +64,7 @@ export default function Profilo() {
           <div>
             <h2 className="text-headline-md" style={{ margin: 0 }}>{utente.nickname}</h2>
             <span className="text-label-caps" style={{ color: 'var(--color-primary-fixed-dim)' }}>
-              {ETICHETTE_RUOLO[utente.ruolo] ?? utente.ruolo}
+              {etichettaRuolo}
             </span>
           </div>
         </div>
@@ -83,26 +87,35 @@ export default function Profilo() {
             <div className="profilo-stats-griglia">
               <div className="profilo-stat-card">
                 <span className="profilo-stat-numero">{statistiche.numero_cronache_pubblicate ?? 0}</span>
-                <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>Cronache</span>
+                <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
+                  {t('profilo.cronache')}
+                </span>
               </div>
               <div className="profilo-stat-card">
                 <span className="profilo-stat-numero">{statistiche.totale_mi_piace ?? 0}</span>
-                <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>Mi Piace Ricevuti</span>
+                <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
+                  {t('profilo.mi_piace_ricevuti')}
+                </span>
               </div>
             </div>
 
-            {/* Visualizzazione Nome Classe (Senza Codice di Sicurezza) */}
+            {/* Visualizzazione Nome Classe */}
             {nomeClasse && (
               <div className="neo-card">
                 <div className="neo-card-header">
                   <span className="text-label-caps" style={{ color: 'var(--color-secondary)' }}>
-                    🏫 Classe {utente.ruolo === 'root' ? '(Fondata da te)' : (utente.ruolo === 'admin' ? '(Amministrata da te)' : '')}
+                    {t('profilo.scheda_classe')}{' '}
+                    {utente.ruolo === 'root'
+                      ? t('profilo.fondata_da_te')
+                      : utente.ruolo === 'admin'
+                      ? t('profilo.amministrata_da_te')
+                      : ''}
                   </span>
                   <span aria-hidden="true">📍</span>
                 </div>
                 <div>
                   <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)', display: 'block', fontSize: 12 }}>
-                    Nome Classe
+                    {t('profilo.nome_classe')}
                   </span>
                   <span className="text-headline-md" style={{ color: 'var(--color-primary-fixed-dim)' }}>
                     {nomeClasse}
@@ -112,8 +125,10 @@ export default function Profilo() {
             )}
 
             <div className="neo-card">
-              <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>Membro dal</span>
-              <span className="text-body-md">{dataFormattata(statistiche.creato_il)}</span>
+              <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
+                {t('profilo.membro_dal')}
+              </span>
+              <span className="text-body-md">{dataFormattata(statistiche.creato_il, localeData)}</span>
             </div>
           </>
         )}
@@ -123,7 +138,7 @@ export default function Profilo() {
           className="btn-brutalist btn-secondary-outline"
           onClick={() => navigate('/membri')}
         >
-          👥 Membri della Classe
+          {t('profilo.btn_membri')}
         </button>
 
         <GuidaAggiungiHome pulsanteInline />
@@ -133,11 +148,11 @@ export default function Profilo() {
           className="btn-brutalist btn-secondary-outline"
           onClick={() => navigate('/impostazioni')}
         >
-          ⚙️ Impostazioni
+          {t('profilo.btn_impostazioni')}
         </button>
 
         <button className="btn-brutalist btn-secondary-outline" onClick={gestisciUscita}>
-          Esci
+          {t('profilo.btn_esci')}
         </button>
       </div>
     </LayoutApp>

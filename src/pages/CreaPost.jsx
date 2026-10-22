@@ -8,18 +8,11 @@ import LayoutApp from '../components/LayoutApp'
 const LIMITE_CARATTERI = 500
 const CATEGORIA_DEFAULT = 'generale'
 
-const DOMANDE_SPUNTO = [
-  'Cosa è successo oggi in classe?',
-  "C'è qualcosa che ti ha fatto ridere di recente?",
-  'Un segreto che vuoi condividere?',
-  "Qual è stato il momento più imbarazzante della settimana?",
-  "C'è un episodio buffo successo durante una lezione?",
-  'Cosa vorresti dire alla classe ma non hai mai detto?',
-]
 
 function SpuntoScrittura({ onScegliSpunto, disabled }) {
   const { t } = useTranslation()
   const [aperto, setAperto] = useState(false)
+  const spunti = t('crea_post.spunti', { returnObjects: true }) || []
 
   return (
     <div className="neo-card" style={{ gap: 'var(--space-sm)' }}>
@@ -42,7 +35,7 @@ function SpuntoScrittura({ onScegliSpunto, disabled }) {
           <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-on-surface-variant)' }}>
             {t('crea_post.spunto_sotto')}
           </p>
-          {DOMANDE_SPUNTO.map((domanda) => (
+          {Array.isArray(spunti) && spunti.map((domanda) => (
             <button
               key={domanda}
               type="button"
@@ -124,7 +117,7 @@ export default function CreaPost() {
         categoria: CATEGORIA_DEFAULT,
       })
 
-      setSuccesso(risposta.messaggio)
+      setSuccesso(t('crea_post.successo'))
       setTitolo('')
       setContenuto('')
 
@@ -145,9 +138,8 @@ export default function CreaPost() {
       <div className="banner-legale">
         <span aria-hidden="true">⚠️</span>
         <div>
-          <span className="banner-legale-titolo">Protocollo Rigido</span>
-          Promemoria: Non usare nomi veri, nomi di insegnanti o dettagli identificativi.
-          Mantieni tutto anonimo e divertente! I contenuti inappropriati non saranno approvati.
+          <span className="banner-legale-titolo">{t('crea_post.banner_titolo')}</span>
+          {t('crea_post.banner_testo')}
         </div>
       </div>
 

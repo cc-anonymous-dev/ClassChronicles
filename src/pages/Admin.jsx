@@ -1,23 +1,25 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { tempoRelativo } from '../lib/formattazione'
 import LayoutApp from '../components/LayoutApp'
 
 function AccessoNegato() {
+  const { t } = useTranslation()
   return (
     <div className="stato-vuoto">
       <span style={{ fontSize: 40 }}>🔒</span>
-      <h3 className="text-headline-md" style={{ margin: 0 }}>Accesso Riservato</h3>
+      <h3 className="text-headline-md" style={{ margin: 0 }}>{t('admin.accesso_negato_titolo')}</h3>
       <p className="text-body-md">
-        Questa sezione è visibile solo agli Admin e al ROOT della classe.
-        Se pensi sia un errore, contatta il ROOT della tua classe per essere promosso.
+        {t('admin.accesso_negato_testo')}
       </p>
     </div>
   )
 }
 
 function CardModerazione({ post, onModera, onBanna, motiviPredefiniti, eRoot }) {
+  const { t } = useTranslation()
   const [elaborando, setElaborando] = useState(false)
   const [mostraFormBan, setMostraFormBan] = useState(false)
 
@@ -33,7 +35,7 @@ function CardModerazione({ post, onModera, onBanna, motiviPredefiniti, eRoot }) 
     <div className={`admin-card-moderazione ${eSegnalato ? 'segnalato' : ''}`}>
       <div className="admin-card-header" style={{ justifyContent: 'flex-end' }}>
         <span className="admin-card-id">
-          {eSegnalato ? `🚩 SEGNALATO (${post.numero_segnalazioni})` : `ID: #${post.id.slice(0, 6).toUpperCase()}`}
+          {eSegnalato ? t('admin.segnalato_badge', { conteggio: post.numero_segnalazioni }) : `ID: #${post.id.slice(0, 6).toUpperCase()}`}
         </span>
       </div>
 
@@ -41,17 +43,17 @@ function CardModerazione({ post, onModera, onBanna, motiviPredefiniti, eRoot }) 
       <p className="post-card-contenuto">{post.contenuto}</p>
       {post.autore_nickname && (
         <span style={{ fontSize: 12, color: 'var(--color-on-surface-variant)', display: 'block', marginBottom: 4 }}>
-          ✍️ Autore: @{post.autore_nickname}
+          {t('admin.autore', { nickname: post.autore_nickname })}
         </span>
       )}
       <span className="post-card-tempo">{tempoRelativo(post.creato_il)}</span>
 
       <div className="admin-card-azioni">
         <button className="btn-approva" onClick={() => gestisci('approva')} disabled={elaborando}>
-          ✅ Approva
+          {t('admin.btn_approva')}
         </button>
         <button className="btn-rifiuta" onClick={() => gestisci('rifiuta')} disabled={elaborando}>
-          ⊗ Rifiuta
+          {t('admin.btn_rifiuta')}
         </button>
       </div>
 
@@ -63,7 +65,7 @@ function CardModerazione({ post, onModera, onBanna, motiviPredefiniti, eRoot }) 
             onClick={() => setMostraFormBan(!mostraFormBan)}
             disabled={elaborando}
           >
-            🚫 {mostraFormBan ? 'Annulla' : 'Banna Autore'}
+            {mostraFormBan ? `🚫 ${t('admin.btn_annulla')}` : t('admin.btn_banna_autore')}
           </button>
           {mostraFormBan && (
             <FormBanUtente
@@ -83,6 +85,7 @@ function CardModerazione({ post, onModera, onBanna, motiviPredefiniti, eRoot }) 
 }
 
 function CodaApprovazione({ utente }) {
+  const { t } = useTranslation()
   const [post, setPost] = useState([])
   const [numeroParoleVietate, setNumeroParoleVietate] = useState(0)
   const [filtroAttivo, setFiltroAttivo] = useState(true)
@@ -144,9 +147,9 @@ function CodaApprovazione({ utente }) {
       <div className="admin-sezione-controlli">
         <div className="admin-riga-controllo">
           <div className="admin-riga-controllo-testo">
-            <span className="text-body-md" style={{ fontWeight: 600 }}>Filtro Parole Vietate</span>
+            <span className="text-body-md" style={{ fontWeight: 600 }}>{t('admin.filtro_parole_titolo')}</span>
             <span style={{ fontSize: 13, color: 'var(--color-on-surface-variant)' }}>
-              Intercettando {numeroParoleVietate} termini
+              {t('admin.intercettando_termini', { numero: numeroParoleVietate })}
             </span>
           </div>
           <label className="toggle-switch">
@@ -157,8 +160,8 @@ function CodaApprovazione({ utente }) {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>In Attesa di Approvazione</h3>
-        <span className="admin-badge-coda">{post.length} elementi in coda</span>
+        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>{t('admin.in_attesa_approvazione')}</h3>
+        <span className="admin-badge-coda">{t('admin.elementi_in_coda', { conteggio: post.length })}</span>
       </div>
 
       {caricamento && (
@@ -177,7 +180,7 @@ function CodaApprovazione({ utente }) {
       {!caricamento && !errore && post.length === 0 && (
         <div className="stato-vuoto">
           <span style={{ fontSize: 32 }}>✅</span>
-          <p className="text-body-md">Nessuna cronaca in attesa. Tutto sotto controllo!</p>
+          <p className="text-body-md">{t('admin.nessuna_cronaca_coda')}</p>
         </div>
       )}
 
@@ -196,6 +199,7 @@ function CodaApprovazione({ utente }) {
 }
 
 function FormBanUtente({ utenteTarget, motiviPredefiniti, onBanna, onAnnulla }) {
+  const { t } = useTranslation()
   const [giorni, setGiorni] = useState(3)
   const [motivo, setMotivo] = useState('')
   const [inviando, setInviando] = useState(false)
@@ -210,14 +214,14 @@ function FormBanUtente({ utenteTarget, motiviPredefiniti, onBanna, onAnnulla }) 
   return (
     <div className="pannello-ban-form">
       <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>
-        Banna @{utenteTarget.nickname}
+        {t('admin.banna_titolo', { nickname: utenteTarget.nickname })}
       </span>
 
       <table className="tabella-motivi-ban">
         <thead>
           <tr>
-            <th>Motivo suggerito</th>
-            <th>Giorni</th>
+            <th>{t('admin.motivo_suggerito')}</th>
+            <th>{t('admin.giorni')}</th>
           </tr>
         </thead>
         <tbody>
@@ -244,7 +248,7 @@ function FormBanUtente({ utenteTarget, motiviPredefiniti, onBanna, onAnnulla }) 
           onChange={(e) => setMotivo(e.target.value)}
           disabled={inviando}
         />
-        <label className="campo-label" htmlFor="motivo-ban-custom">Motivo del ban</label>
+        <label className="campo-label" htmlFor="motivo-ban-custom">{t('admin.motivo_del_ban')}</label>
       </div>
 
       <div className="campo-input-wrap">
@@ -258,20 +262,21 @@ function FormBanUtente({ utenteTarget, motiviPredefiniti, onBanna, onAnnulla }) 
           onChange={(e) => setGiorni(Number(e.target.value))}
           disabled={inviando}
         />
-        <label className="campo-label" htmlFor="giorni-ban">Giorni di sospensione</label>
+        <label className="campo-label" htmlFor="giorni-ban">{t('admin.giorni_sospensione')}</label>
       </div>
 
       <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
         <button className="btn-rifiuta" style={{ flex: 1 }} onClick={gestisciConferma} disabled={inviando || !motivo.trim()}>
-          {inviando ? <span className="spinner" aria-hidden="true" /> : `🚫 Banna per ${giorni}g`}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : t('admin.btn_banna_per_giorni', { giorni })}
         </button>
-        <button className="btn-azione-piccolo" onClick={onAnnulla} disabled={inviando}>Annulla</button>
+        <button className="btn-azione-piccolo" onClick={onAnnulla} disabled={inviando}>{t('admin.btn_annulla')}</button>
       </div>
     </div>
   )
 }
 
 function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, motiviPredefiniti }) {
+  const { t, i18n } = useTranslation()
   const [mostraFormBan, setMostraFormBan] = useState(false)
 
   return (
@@ -280,13 +285,16 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
         <span className="text-body-md" style={{ fontWeight: 600 }}>@{u.nickname}</span>
         <div style={{ display: 'flex', gap: 'var(--space-xs)' }}>
           <span className={`badge-ruolo ${u.ruolo}`}>{u.ruolo}</span>
-          {u.bannato_attualmente && <span className="badge-bannato">Bannato</span>}
+          {u.bannato_attualmente && <span className="badge-bannato">{t('admin.badge_bannato')}</span>}
         </div>
       </div>
 
       {u.bannato_attualmente && (
         <span style={{ fontSize: 13, color: 'var(--color-error)' }}>
-          Motivo: {u.motivo_ban} — fino al {new Date(u.bannato_fino_a).toLocaleDateString('it-IT')}
+          {t('admin.bannato_fino_al', {
+            motivo: u.motivo_ban,
+            data: new Date(u.bannato_fino_a).toLocaleDateString(i18n.language?.startsWith('en') ? 'en-US' : 'it-IT')
+          })}
         </span>
       )}
 
@@ -294,21 +302,21 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
         <div className="riga-utente-azioni">
           {u.bannato_attualmente ? (
             <button className="btn-azione-piccolo" onClick={() => onRimuoviBan(u.id)}>
-              ✅ Rimuovi Ban
+              {t('admin.rimuovi_ban')}
             </button>
           ) : (
             <button className="btn-azione-piccolo pericolo" onClick={() => setMostraFormBan(!mostraFormBan)}>
-              🚫 Banna
+              {t('admin.btn_banna')}
             </button>
           )}
 
           {u.ruolo === 'admin' ? (
             <button className="btn-azione-piccolo" onClick={() => onRimuoviAdmin(u.id)}>
-              Rimuovi Admin
+              {t('admin.rimuovi_admin')}
             </button>
           ) : (
             <button className="btn-azione-piccolo" onClick={() => onPromuovi(u.id)}>
-              ⬆️ Promuovi Admin
+              {t('admin.promuovi_admin')}
             </button>
           )}
         </div>
@@ -330,6 +338,7 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
 }
 
 function ZonaPericolo({ utente }) {
+  const { t } = useTranslation()
   const [scaricando, setScaricando] = useState(false)
   const [mostraConferma, setMostraConferma] = useState(false)
   const [testoConferma, setTestoConferma] = useState('')
@@ -379,8 +388,7 @@ function ZonaPericolo({ utente }) {
       <div className="zona-pericolo">
         <span style={{ fontSize: 32 }}>💥</span>
         <p className="text-body-md">
-          La classe e tutti i suoi dati sono stati eliminati permanentemente.
-          Puoi chiudere questa pagina o uscire dall'account.
+          {t('admin.distruzione_completata')}
         </p>
       </div>
     )
@@ -390,10 +398,10 @@ function ZonaPericolo({ utente }) {
     <div className="zona-pericolo">
       <div className="zona-pericolo-titolo">
         <span aria-hidden="true">⚠️</span>
-        <span>Zona Pericolo</span>
+        <span>{t('admin.zona_pericolo_titolo')}</span>
       </div>
       <p className="text-body-md" style={{ margin: 0, color: 'var(--color-on-surface-variant)', fontSize: 14 }}>
-        Azioni di sistema irreversibili. Procedere con cautela.
+        {t('admin.zona_pericolo_desc')}
       </p>
 
       {errore && (
@@ -404,18 +412,17 @@ function ZonaPericolo({ utente }) {
       )}
 
       <button className="btn-zona-pericolo" onClick={gestisciBackup} disabled={scaricando}>
-        {scaricando ? <span className="spinner" aria-hidden="true" /> : <>⬇️ Scarica Backup (Solo Testo)</>}
+        {scaricando ? <span className="spinner" aria-hidden="true" /> : t('admin.scarica_backup')}
       </button>
 
       {!mostraConferma ? (
         <button className="btn-autodistruzione" onClick={() => setMostraConferma(true)}>
-          🗑️ Autodistruzione di Fine Anno
+          {t('admin.autodistruzione')}
         </button>
       ) : (
         <div className="conferma-autodistruzione-box">
           <p className="text-body-md" style={{ margin: 0 }}>
-            Questa azione cancellerà <strong>permanentemente</strong> tutte le cronache, gli utenti e la classe stessa.
-            Non può essere annullata. Scarica prima il backup se vuoi conservare le cronache.
+            {t('admin.autodistruzione_avviso')}
           </p>
           <div className="campo-input-wrap">
             <input
@@ -428,7 +435,7 @@ function ZonaPericolo({ utente }) {
               disabled={distruggendo}
             />
             <label className="campo-label" htmlFor="conferma-distruzione">
-              Scrivi "CONFERMA" per procedere
+              {t('admin.scrivi_conferma')}
             </label>
           </div>
           <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
@@ -438,14 +445,14 @@ function ZonaPericolo({ utente }) {
               onClick={gestisciAutodistruzione}
               disabled={distruggendo || testoConferma !== 'CONFERMA'}
             >
-              {distruggendo ? <span className="spinner" aria-hidden="true" /> : 'Elimina Tutto Definitivamente'}
+              {distruggendo ? <span className="spinner" aria-hidden="true" /> : t('admin.elimina_tutto_definitivamente')}
             </button>
             <button
               className="btn-azione-piccolo"
               onClick={() => { setMostraConferma(false); setTestoConferma('') }}
               disabled={distruggendo}
             >
-              Annulla
+              {t('admin.btn_annulla')}
             </button>
           </div>
         </div>
@@ -455,6 +462,7 @@ function ZonaPericolo({ utente }) {
 }
 
 function GestioneUtenti({ utente }) {
+  const { t } = useTranslation()
   const { accedi } = useAuth()
   const [utenti, setUtenti] = useState([])
   const [motiviPredefiniti, setMotiviPredefiniti] = useState([])
@@ -515,7 +523,7 @@ function GestioneUtenti({ utente }) {
         </div>
       )}
 
-      <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>Utenti della Classe</h3>
+      <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>{t('admin.utenti_della_classe')}</h3>
 
       {utenti.map((u) => (
         <RigaUtente
@@ -533,6 +541,7 @@ function GestioneUtenti({ utente }) {
 }
 
 function CardRichiestaRimozione({ richiesta, onDecidi, onBanna, motiviPredefiniti, eRoot }) {
+  const { t } = useTranslation()
   const [elaborando, setElaborando] = useState(false)
   const [mostraFormBan, setMostraFormBan] = useState(false)
 
@@ -548,30 +557,30 @@ function CardRichiestaRimozione({ richiesta, onDecidi, onBanna, motiviPredefinit
   return (
     <div className="card-richiesta-rimozione">
       <span className="text-label-caps" style={{ color: 'var(--color-tertiary-container)' }}>
-        🙈 Richiesta di Rimozione
+        {t('admin.richiesta_rimozione_titolo')}
       </span>
-      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>{richiesta.post?.titolo ?? '(cronaca non più disponibile)'}</h4>
+      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>{richiesta.post?.titolo ?? t('admin.cronaca_non_disponibile')}</h4>
       {richiesta.post?.contenuto && (
         <p className="post-card-contenuto">{richiesta.post.contenuto}</p>
       )}
       {richiesta.motivo && (
         <p className="text-body-md" style={{ fontSize: 14, color: 'var(--color-on-surface-variant)', margin: '4px 0' }}>
-          <strong>Motivo:</strong> {richiesta.motivo}
+          <strong>{t('admin.motivo_label')}</strong> {richiesta.motivo}
         </p>
       )}
       {autoreNickname && (
         <span style={{ fontSize: 12, color: 'var(--color-on-surface-variant)', display: 'block', marginBottom: 4 }}>
-          ✍️ Autore: @{autoreNickname}
+          {t('admin.autore', { nickname: autoreNickname })}
         </span>
       )}
       <span className="post-card-tempo">{tempoRelativo(richiesta.creata_il)}</span>
 
       <div className="admin-card-azioni">
         <button className="btn-accoglie" onClick={() => gestisci('accoglie')} disabled={elaborando}>
-          ✅ Accogli (rimuovi)
+          {t('admin.accogli_rimuovi')}
         </button>
         <button className="btn-rifiuta" onClick={() => gestisci('rifiuta')} disabled={elaborando}>
-          ⊗ Rifiuta richiesta
+          {t('admin.rifiuta_richiesta')}
         </button>
       </div>
 
@@ -584,7 +593,7 @@ function CardRichiestaRimozione({ richiesta, onDecidi, onBanna, motiviPredefinit
             onClick={() => setMostraFormBan(!mostraFormBan)}
             disabled={elaborando}
           >
-            🚫 {mostraFormBan ? 'Annulla' : 'Banna Autore'}
+            {mostraFormBan ? `🚫 ${t('admin.btn_annulla')}` : t('admin.btn_banna_autore')}
           </button>
           {mostraFormBan && (
             <FormBanUtente
@@ -604,6 +613,7 @@ function CardRichiestaRimozione({ richiesta, onDecidi, onBanna, motiviPredefinit
 }
 
 function RichiesteRimozione({ utente }) {
+  const { t } = useTranslation()
   const [richieste, setRichieste] = useState([])
   const [caricamento, setCaricamento] = useState(true)
   const [errore, setErrore] = useState('')
@@ -664,8 +674,8 @@ function RichiesteRimozione({ utente }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>Richieste di Rimozione</h3>
-        <span className="admin-badge-coda">{richieste.length} in attesa</span>
+        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>{t('admin.tab_rimozioni')}</h3>
+        <span className="admin-badge-coda">{t('admin.in_attesa_conteggio', { conteggio: richieste.length })}</span>
       </div>
 
       {caricamento && (
@@ -684,7 +694,7 @@ function RichiesteRimozione({ utente }) {
       {!caricamento && !errore && richieste.length === 0 && (
         <div className="stato-vuoto">
           <span style={{ fontSize: 32 }}>✅</span>
-          <p className="text-body-md">Nessuna richiesta di rimozione in attesa.</p>
+          <p className="text-body-md">{t('admin.nessuna_richiesta_rimozione')}</p>
         </div>
       )}
 
@@ -703,6 +713,7 @@ function RichiesteRimozione({ utente }) {
 }
 
 function CardSegnalazioneUtente({ segnalazione, onArchivia, onBanna, motiviPredefiniti, eRoot }) {
+  const { t } = useTranslation()
   const [elaborando, setElaborando] = useState(false)
   const [mostraFormBan, setMostraFormBan] = useState(false)
 
@@ -717,10 +728,10 @@ function CardSegnalazioneUtente({ segnalazione, onArchivia, onBanna, motiviPrede
   return (
     <div className="card-richiesta-rimozione">
       <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>
-        🚩 Segnalazione Utente
+        {t('admin.segnalazione_utente_titolo')}
       </span>
       <h4 className="post-card-titolo" style={{ fontSize: 18 }}>
-        @{utenteTarget?.nickname ?? '(utente non più disponibile)'}
+        {utenteTarget?.nickname ? `@${utenteTarget.nickname}` : t('admin.utente_non_disponibile')}
         {utenteTarget?.ruolo && utenteTarget.ruolo !== 'studente' && (
           <span className="badge-moderatore" style={{ marginLeft: 8, verticalAlign: 'middle' }}>
             {utenteTarget.ruolo}
@@ -734,7 +745,7 @@ function CardSegnalazioneUtente({ segnalazione, onArchivia, onBanna, motiviPrede
 
       <div className="admin-card-azioni">
         <button className="btn-approva" onClick={gestisci} disabled={elaborando}>
-          ✅ Segna come esaminata
+          {t('admin.segna_come_esaminata')}
         </button>
       </div>
 
@@ -747,7 +758,7 @@ function CardSegnalazioneUtente({ segnalazione, onArchivia, onBanna, motiviPrede
             onClick={() => setMostraFormBan(!mostraFormBan)}
             disabled={elaborando}
           >
-            🚫 {mostraFormBan ? 'Annulla' : 'Banna Utente'}
+            {mostraFormBan ? `🚫 ${t('admin.btn_annulla')}` : t('admin.banna_utente')}
           </button>
           {mostraFormBan && (
             <FormBanUtente
@@ -767,6 +778,7 @@ function CardSegnalazioneUtente({ segnalazione, onArchivia, onBanna, motiviPrede
 }
 
 function SegnalazioniUtenti({ utente }) {
+  const { t } = useTranslation()
   const [segnalazioni, setSegnalazioni] = useState([])
   const [caricamento, setCaricamento] = useState(true)
   const [errore, setErrore] = useState('')
@@ -826,8 +838,8 @@ function SegnalazioniUtenti({ utente }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>Segnalazioni Utenti</h3>
-        <span className="admin-badge-coda">{segnalazioni.length} in attesa</span>
+        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>{t('admin.tab_segnalazioni')}</h3>
+        <span className="admin-badge-coda">{t('admin.in_attesa_conteggio', { conteggio: segnalazioni.length })}</span>
       </div>
 
       {caricamento && (
@@ -846,7 +858,7 @@ function SegnalazioniUtenti({ utente }) {
       {!caricamento && !errore && segnalazioni.length === 0 && (
         <div className="stato-vuoto">
           <span style={{ fontSize: 32 }}>✅</span>
-          <p className="text-body-md">Nessuna segnalazione utente in attesa.</p>
+          <p className="text-body-md">{t('admin.nessuna_segnalazione_attesa')}</p>
         </div>
       )}
 
@@ -865,38 +877,39 @@ function SegnalazioniUtenti({ utente }) {
 }
 
 function DashboardAdmin({ utente }) {
+  const { t } = useTranslation()
   const [tab, setTab] = useState('coda')
   const eRoot = utente.ruolo === 'root'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-      <h2 className="text-headline-md" style={{ margin: 0 }}>Controlli di Sistema</h2>
+      <h2 className="text-headline-md" style={{ margin: 0 }}>{t('admin.titolo')}</h2>
 
       <div className="root-tab-selector">
         <button
           className={`root-tab-btn ${tab === 'coda' ? 'attivo' : ''}`}
           onClick={() => setTab('coda')}
         >
-          Coda Approvazione
+          {t('admin.tab_coda')}
         </button>
         <button
           className={`root-tab-btn ${tab === 'rimozioni' ? 'attivo' : ''}`}
           onClick={() => setTab('rimozioni')}
         >
-          Richieste Rimozione
+          {t('admin.tab_rimozioni')}
         </button>
         <button
           className={`root-tab-btn ${tab === 'segnalazioni-utenti' ? 'attivo' : ''}`}
           onClick={() => setTab('segnalazioni-utenti')}
         >
-          Segnalazioni Utenti
+          {t('admin.tab_segnalazioni')}
         </button>
         {eRoot && (
           <button
             className={`root-tab-btn ${tab === 'utenti' ? 'attivo' : ''}`}
             onClick={() => setTab('utenti')}
           >
-            Gestione Utenti
+            {t('admin.tab_utenti')}
           </button>
         )}
       </div>

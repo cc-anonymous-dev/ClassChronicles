@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { rilevaPiattaforma } from '../lib/rilevaPiattaforma'
 
 const CONTENUTI = {
@@ -49,6 +50,7 @@ const CONTENUTI = {
 }
 
 export default function GuidaAggiungiHome({ pulsanteInline }) {
+  const { t } = useTranslation()
   const [piattaforma, setPiattaforma] = useState(null)
   const [mostraGuida, setMostraGuida] = useState(false)
 
@@ -69,7 +71,7 @@ export default function GuidaAggiungiHome({ pulsanteInline }) {
           className="btn-brutalist btn-secondary-outline"
           onClick={() => setMostraGuida(true)}
         >
-          📲 Installa l'App sulla Home
+          {t('guida_home.btn_installa_home')}
         </button>
       ) : (
         !mostraGuida && (
@@ -78,7 +80,7 @@ export default function GuidaAggiungiHome({ pulsanteInline }) {
             className="pulsante-mostra-guida btn-brutalist btn-primary-container"
             onClick={() => setMostraGuida(true)}
           >
-            📲 Installa l'App
+            {t('guida_home.btn_installa')}
           </button>
         )
       )}
@@ -91,7 +93,7 @@ export default function GuidaAggiungiHome({ pulsanteInline }) {
               <button
                 type="button"
                 onClick={() => setMostraGuida(false)}
-                aria-label="Chiudi"
+                aria-label={t('comune.chiudi')}
                 style={{ background: 'none', border: 'none', color: 'var(--color-on-surface)', fontSize: 20, cursor: 'pointer' }}
               >
                 ✕
@@ -99,7 +101,7 @@ export default function GuidaAggiungiHome({ pulsanteInline }) {
             </div>
 
             <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)', margin: 0 }}>
-              Aggiungi Class Chronicles alla schermata Home per aprirla come una vera app, senza passare dal browser.
+              {t('guida_home.descrizione')}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
@@ -117,7 +119,7 @@ export default function GuidaAggiungiHome({ pulsanteInline }) {
             </div>
 
             <button type="button" className="btn-brutalist btn-secondary-outline" onClick={() => setMostraGuida(false)}>
-              Ho Capito
+              {t('guida_home.ho_capito')}
             </button>
           </div>
         </div>

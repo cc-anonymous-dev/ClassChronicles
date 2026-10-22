@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
 import ModalSegnalaUtente from '../components/ModalSegnalaUtente'
 
 function RigaMembro({ membro, onSegnala, ruoloCorrente }) {
+  const { t } = useTranslation()
   const [mostraModal, setMostraModal] = useState(false)
   const [segnalato, setSegnalato] = useState(false)
 
@@ -22,16 +24,16 @@ function RigaMembro({ membro, onSegnala, ruoloCorrente }) {
       <div className="riga-membro-nome">
         <span aria-hidden="true">👤</span>
         <span className="text-body-md">{membro.nickname}</span>
-        {puoVedereBadge && membro.e_moderatore && <span className="badge-moderatore">Staff</span>}
+        {puoVedereBadge && membro.e_moderatore && <span className="badge-moderatore">{t('membri.badge_staff')}</span>}
       </div>
 
       {segnalato ? (
         <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)', fontSize: 11 }}>
-          ✅ Segnalato
+          {t('membri.segnalato')}
         </span>
       ) : (
         <button className="btn-segnala-membro" onClick={() => setMostraModal(true)}>
-          🚩 Segnala
+          {t('membri.btn_segnala')}
         </button>
       )}
 
@@ -47,6 +49,7 @@ function RigaMembro({ membro, onSegnala, ruoloCorrente }) {
 }
 
 export default function MembriClasse() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { utente } = useAuth()
   const [membri, setMembri] = useState([])
@@ -89,18 +92,18 @@ export default function MembriClasse() {
           <button
             type="button"
             onClick={() => navigate('/profilo')}
-            aria-label="Torna al profilo"
+            aria-label={t('membri.torna_profilo')}
             style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: 20, cursor: 'pointer' }}
           >
             ←
           </button>
-          <h2 className="text-headline-md" style={{ margin: 0 }}>Membri della Classe</h2>
+          <h2 className="text-headline-md" style={{ margin: 0 }}>{t('membri.titolo')}</h2>
         </div>
 
         <input
           type="text"
           className="campo-ricerca-membri"
-          placeholder="Cerca un nickname..."
+          placeholder={t('membri.placeholder_ricerca')}
           value={ricerca}
           onChange={(e) => setRicerca(e.target.value)}
         />
@@ -121,7 +124,7 @@ export default function MembriClasse() {
         {!caricamento && !errore && membriFiltrati.length === 0 && (
           <div className="stato-vuoto">
             <span style={{ fontSize: 32 }}>🔍</span>
-            <p className="text-body-md">Nessun membro trovato.</p>
+            <p className="text-body-md">{t('membri.nessun_membro')}</p>
           </div>
         )}
 

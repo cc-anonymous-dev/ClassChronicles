@@ -1,8 +1,10 @@
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { tempoRelativo } from '../lib/formattazione'
 import ModalRichiediRimozione from './ModalRichiediRimozione'
 
 export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiMiPiace }) {
+  const { t } = useTranslation()
   const [segnalazioneInviata, setSegnalazioneInviata] = useState(false)
   const [mostraConfermaSegnalazione, setMostraConfermaSegnalazione] = useState(false)
   const [mostraModalRimozione, setMostraModalRimozione] = useState(false)
@@ -126,7 +128,7 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
             onClick={() => setMostraModalRimozione(true)}
           >
             <span aria-hidden="true">🙈</span>
-            <span>Mi riconosco</span>
+            <span>{t('postcard.mi_riconosco')}</span>
           </button>
         )}
 
@@ -138,12 +140,12 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
             onClick={() => setMostraConfermaSegnalazione(true)}
           >
             <span aria-hidden="true">🚩</span>
-            <span>Segnala</span>
+            <span>{t('postcard.segnala')}</span>
           </button>
         ) : (
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-sm)', alignItems: 'center' }}>
             <span className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)' }}>
-              Confermi?
+              {t('postcard.confermi')}
             </span>
             <button
               type="button"
@@ -151,14 +153,14 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
               onClick={gestisciSegnalazione}
               style={{ fontWeight: 700 }}
             >
-              Sì
+              {t('postcard.si')}
             </button>
             <button
               type="button"
               className="post-card-azione-btn"
               onClick={() => setMostraConfermaSegnalazione(false)}
             >
-              No
+              {t('postcard.no')}
             </button>
           </span>
         )}
