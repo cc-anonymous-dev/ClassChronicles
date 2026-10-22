@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import BannerFeedback from '../components/BannerFeedback'
+import SelettoreLinguaRapido from '../components/SelettoreLinguaRapido'
 
 const AGGETTIVI = [
   'Curioso', 'Silenzioso', 'Rapido', 'Astuto', 'Coraggioso', 'Distratto',
@@ -23,10 +24,11 @@ function generaNicknamePreview() {
 }
 
 function CardIdentita({ nicknamePreview, onRigenera, disabled }) {
+  const { t } = useTranslation()
   return (
     <div className="neo-card">
       <div className="neo-card-header">
-        <span className="text-label-caps" style={{ color: 'var(--color-secondary)' }}>Alias Attuale</span>
+        <span className="text-label-caps" style={{ color: 'var(--color-secondary)' }}>{t('benvenuto.alias_attuale')}</span>
         <span aria-hidden="true">🔒</span>
       </div>
 
@@ -56,13 +58,14 @@ function CardIdentita({ nicknamePreview, onRigenera, disabled }) {
         onClick={onRigenera}
         disabled={disabled}
       >
-        🔄 Genera Nickname Casuale
+        {t('benvenuto.genera_nickname')}
       </button>
     </div>
   )
 }
 
 function FormEntraClasse({ nicknamePreview }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { accedi } = useAuth()
 
@@ -77,15 +80,15 @@ function FormEntraClasse({ nicknamePreview }) {
     setErrore('')
 
     if (!codiceClasse.trim() || !password) {
-      setErrore('Inserisci sia il Codice Classe che una password.')
+      setErrore(t('benvenuto.errore_entra_campi'))
       return
     }
     if (password.length < 6) {
-      setErrore('La password deve avere almeno 6 caratteri.')
+      setErrore(t('benvenuto.errore_password_min'))
       return
     }
     if (!accettaRegole) {
-      setErrore('Devi accettare le Regole della Community per entrare nella classe.')
+      setErrore(t('benvenuto.errore_entra_regole'))
       return
     }
 
@@ -116,7 +119,7 @@ function FormEntraClasse({ nicknamePreview }) {
       <div className="neo-card">
         <div className="neo-card-header">
           <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
-            Portale di Accesso
+            {t('benvenuto.portale_accesso')}
           </span>
           <span aria-hidden="true">🚪</span>
         </div>
@@ -152,7 +155,7 @@ function FormEntraClasse({ nicknamePreview }) {
               style={{ textTransform: 'uppercase' }}
               disabled={inviando}
             />
-            <label className="campo-label" htmlFor="codice-classe">Codice Classe Privato</label>
+            <label className="campo-label" htmlFor="codice-classe">{t('benvenuto.codice_classe_privato')}</label>
           </div>
 
           <div className="campo-input-wrap">
@@ -166,7 +169,7 @@ function FormEntraClasse({ nicknamePreview }) {
               onChange={(e) => setPassword(e.target.value)}
               disabled={inviando}
             />
-            <label className="campo-label" htmlFor="password-registrazione">Password Univoca (min. 6 caratteri)</label>
+            <label className="campo-label" htmlFor="password-registrazione">{t('benvenuto.password_univoca')}</label>
           </div>
         </div>
 
@@ -178,14 +181,14 @@ function FormEntraClasse({ nicknamePreview }) {
             disabled={inviando}
           />
           <span className="text-body-md" style={{ fontSize: 14 }}>
-            Ho letto e accetto le{' '}
+            {t('benvenuto.accetta_regole_prefisso')}{' '}
             <button
               type="button"
               className="link-testuale"
               style={{ fontSize: 14 }}
               onClick={(e) => { e.preventDefault(); window.open('/regole', '_blank') }}
             >
-              Regole della Community e la Privacy
+              {t('benvenuto.regole_e_privacy')}
             </button>
             .
           </span>
@@ -199,7 +202,7 @@ function FormEntraClasse({ nicknamePreview }) {
         )}
 
         <button type="submit" className="btn-brutalist btn-primary" disabled={inviando || !accettaRegole}>
-          {inviando ? <span className="spinner" aria-hidden="true" /> : <>Entra nella Classe →</>}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : <>{t('benvenuto.btn_entra_classe')}</>}
         </button>
       </div>
     </form>
@@ -443,32 +446,32 @@ function FormCreaClasse({ nicknamePreview }) {
 
     if (!haTestoLibero && !haNumeroELettera) {
       if (haSoloNumeroOLettera) {
-        setErrore('Per identificare la classe con numero e sezione devi selezionarli entrambi (es. 3 e C).')
+        setErrore(t('benvenuto.errore_classe_numero_sezione'))
       } else {
-        setErrore('Indica il nome della classe: inserisci un nome libero, seleziona numero e sezione (es. 3C), o entrambi.')
+        setErrore(t('benvenuto.errore_classe_obbligatoria'))
       }
       return
     }
 
     if (haSoloNumeroOLettera && !haTestoLibero) {
-      setErrore('Per identificare la classe con numero e sezione devi selezionarli entrambi (es. 3 e C).')
+      setErrore(t('benvenuto.errore_classe_numero_sezione'))
       return
     }
 
     if (!password) {
-      setErrore('Inserisci una password per proteggere la classe.')
+      setErrore(t('benvenuto.errore_password_classe'))
       return
     }
     if (password.length < 6) {
-      setErrore('La password deve avere almeno 6 caratteri.')
+      setErrore(t('benvenuto.errore_password_min'))
       return
     }
     if (!accettaResponsabilita) {
-      setErrore('Devi accettare le responsabilità del ROOT per creare una classe.')
+      setErrore(t('benvenuto.errore_accetta_root'))
       return
     }
     if (!accettaRegole) {
-      setErrore('Devi accettare le Regole della Community per procedere.')
+      setErrore(t('benvenuto.errore_accetta_regole'))
       return
     }
 
@@ -524,9 +527,7 @@ function FormCreaClasse({ nicknamePreview }) {
         </div>
 
         <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)', margin: 0, fontSize: 14 }}>
-          Diventerai il <strong style={{ color: 'var(--color-primary-fixed-dim)' }}>ROOT</strong> di questa classe:
-          potrai approvare cronache, gestire segnalazioni, promuovere altri Admin e bannare utenti.
-          Il Codice Classe verrà generato automaticamente dal sistema.
+          {t('benvenuto.root_avviso_ruolo')}
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
@@ -621,15 +622,10 @@ function FormCreaClasse({ nicknamePreview }) {
 
         <div className="blocco-responsabilita">
           <span className="text-label-caps" style={{ color: 'var(--color-tertiary-container)' }}>
-            ⚠️ Responsabilità del ROOT
+            {t('benvenuto.root_responsabilita_titolo')}
           </span>
           <p style={{ margin: 0 }}>
-            Come creatore/creatrice di questa classe, diventerai responsabile della sua moderazione:
-            dovrai esaminare le cronache in attesa, gestire le segnalazioni con equità (comprese
-            quelle che risultano infondate), e intervenire in caso di comportamenti scorretti.
-            Un uso scorretto di questi poteri (bannare ingiustamente, ignorare segnalazioni gravi,
-            approvare contenuti vietati) può portare all'intervento diretto della Supervisione
-            della piattaforma, che può rimuoverti il ruolo di ROOT.
+            {t('benvenuto.root_responsabilita_testo')}
           </p>
           <label className="checkbox-responsabilita">
             <input
@@ -639,7 +635,7 @@ function FormCreaClasse({ nicknamePreview }) {
               disabled={inviando}
             />
             <span className="text-body-md" style={{ fontSize: 14 }}>
-              Ho letto e accetto le responsabilità legate al ruolo di ROOT.
+              {t('benvenuto.accetta_root_label')}
             </span>
           </label>
           <label className="checkbox-responsabilita">
@@ -650,14 +646,14 @@ function FormCreaClasse({ nicknamePreview }) {
               disabled={inviando}
             />
             <span className="text-body-md" style={{ fontSize: 14 }}>
-              Ho letto e accetto le{' '}
+              {t('benvenuto.accetta_regole_prefisso')}{' '}
               <button
                 type="button"
                 className="link-testuale"
                 style={{ fontSize: 14 }}
                 onClick={(e) => { e.preventDefault(); window.open('/regole', '_blank') }}
               >
-                Regole della Community e la Privacy
+                {t('benvenuto.regole_e_privacy')}
               </button>
               .
             </span>
@@ -676,7 +672,7 @@ function FormCreaClasse({ nicknamePreview }) {
           className="btn-brutalist btn-primary-container"
           disabled={inviando || !accettaResponsabilita || !accettaRegole}
         >
-          {inviando ? <span className="spinner" aria-hidden="true" /> : <>👑 Crea Classe e Diventa ROOT</>}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : <>{t('benvenuto.btn_crea_root')}</>}
         </button>
       </div>
     </form>
@@ -684,6 +680,7 @@ function FormCreaClasse({ nicknamePreview }) {
 }
 
 export default function Benvenuto() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { utente, caricamento } = useAuth()
   const [nicknamePreview, setNicknamePreview] = useState(generaNicknamePreview())
@@ -707,17 +704,18 @@ export default function Benvenuto() {
   return (
     <div className="pagina">
       <div className="griglia-decorativa" />
-      <header className="header-brand">
-        <h1 className="text-headline-md">CLASS CHRONICLES</h1>
+      <header className="header-brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-md) var(--space-lg)' }}>
+        <h1 className="text-headline-md" style={{ margin: 0 }}>CLASS CHRONICLES</h1>
+        <SelettoreLinguaRapido />
       </header>
 
       <main className="pagina-contenuto">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', textAlign: 'center' }}>
           <h2 className="text-display-lg" style={{ margin: 0 }}>
-            ENTRA<br />NELLA RETE
+            {t('benvenuto.entra_rete_titolo')}
           </h2>
           <p className="text-body-lg" style={{ color: 'var(--color-on-surface-variant)', margin: 0 }}>
-            Anonimato totale. Alta energia. Proteggi la tua identità.
+            {t('benvenuto.motto')}
           </p>
         </div>
 
@@ -730,7 +728,7 @@ export default function Benvenuto() {
             style={{ flex: 1 }}
             onClick={() => setTabAttivo('entra')}
           >
-            🚪 Entra in Classe
+            {t('benvenuto.tab_entra_btn')}
           </button>
           <button
             type="button"
@@ -738,7 +736,7 @@ export default function Benvenuto() {
             style={{ flex: 1 }}
             onClick={() => setTabAttivo('crea')}
           >
-            👑 Crea Classe
+            {t('benvenuto.tab_crea_btn')}
           </button>
         </div>
 
@@ -749,9 +747,9 @@ export default function Benvenuto() {
         )}
 
         <p className="text-body-md" style={{ textAlign: 'center', color: 'var(--color-on-surface-variant)' }}>
-          Hai già un account?{' '}
+          {t('benvenuto.hai_gia_account')}{' '}
           <button type="button" className="link-testuale" onClick={() => navigate('/accedi')}>
-            Accedi qui
+            {t('benvenuto.accedi_qui')}
           </button>
         </p>
 
@@ -763,7 +761,7 @@ export default function Benvenuto() {
             className="link-testuale"
             style={{ fontSize: '0.875rem' }}
           >
-            🌐 Sito Ufficiale
+            {t('benvenuto.sito_ufficiale')}
           </a>
           <a
             href="https://youtube.com/@classchroniclesdev?si=xG2_Uy0gknBKlGED"
@@ -772,7 +770,7 @@ export default function Benvenuto() {
             className="link-testuale"
             style={{ fontSize: '0.875rem' }}
           >
-            🎬 Canale YouTube
+            {t('benvenuto.canale_youtube')}
           </a>
         </div>
 

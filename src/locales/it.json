@@ -64,7 +64,36 @@
     "sei_root": "Sei entrato come {{nickname}}, ROOT di questa classe.",
     "salva_codice_ora": "⚠️ Salva questo Codice Classe ORA",
     "avviso_codice_perso": "Non potrai più vederlo dopo aver lasciato questa schermata. Condividilo solo con i tuoi compagni di classe.",
-    "ho_salvato_codice": "Ho Salvato il Codice, Continua →"
+    "ho_salvato_codice": "Ho Salvato il Codice, Continua →",
+    "entra_rete_titolo": "ENTRA NELLA RETE",
+    "motto": "Anonimato totale. Alta energia. Proteggi la tua identità.",
+    "alias_attuale": "Alias Attuale",
+    "genera_nickname": "🔄 Genera Nickname Casuale",
+    "tab_entra_btn": "🚪 Entra in Classe",
+    "tab_crea_btn": "👑 Crea Classe",
+    "portale_accesso": "Portale di Accesso",
+    "codice_classe_privato": "Codice Classe Privato",
+    "password_univoca": "Password Univoca (min. 6 caratteri)",
+    "accetta_regole_prefisso": "Ho letto e accetto le",
+    "regole_e_privacy": "Regole della Community e la Privacy",
+    "btn_entra_classe": "Entra nella Classe →",
+    "hai_gia_account": "Hai già un account?",
+    "accedi_qui": "Accedi qui",
+    "sito_ufficiale": "🌐 Sito Ufficiale",
+    "canale_youtube": "🎬 Canale YouTube",
+    "root_avviso_ruolo": "Diventerai il ROOT di questa classe: potrai approvare cronache, gestire segnalazioni, promuovere altri Admin e bannare utenti. Il Codice Classe verrà generato automaticamente dal sistema.",
+    "root_responsabilita_titolo": "⚠️ Responsabilità del ROOT",
+    "root_responsabilita_testo": "Come creatore/creatrice di questa classe, diventerai responsabile della sua moderazione: dovrai esaminare le cronache in attesa, gestire le segnalazioni con equità (comprese quelle che risultano infondate), e intervenire in caso di comportamenti scorretti. Un uso scorretto di questi poteri (bannare ingiustamente, ignorare segnalazioni gravi, approvare contenuti vietati) può portare all'intervento diretto della Supervisione della piattaforma, che può rimuoverti il ruolo di ROOT.",
+    "accetta_root_label": "Ho letto e accetto le responsabilità legate al ruolo di ROOT.",
+    "btn_crea_root": "👑 Crea Classe e Diventa ROOT",
+    "errore_entra_campi": "Inserisci sia il Codice Classe che una password.",
+    "errore_password_min": "La password deve avere almeno 6 caratteri.",
+    "errore_entra_regole": "Devi accettare le Regole della Community per entrare nella classe.",
+    "errore_classe_numero_sezione": "Per identificare la classe con numero e sezione devi selezionarli entrambi (es. 3 e C).",
+    "errore_classe_obbligatoria": "Indica il nome della classe: inserisci un nome libero, seleziona numero e sezione (es. 3C), o entrambi.",
+    "errore_password_classe": "Inserisci una password per proteggere la classe.",
+    "errore_accetta_root": "Devi accettare le responsabilità del ROOT per creare una classe.",
+    "errore_accetta_regole": "Devi accettare le Regole della Community per procedere."
   },
   "accedi": {
     "titolo": "CLASS CHRONICLES",
@@ -221,6 +250,8 @@
     "colore_predefinito": "Predefinito (Verde Acqua)",
     "colore_personalizzato": "Personalizzato",
     "zoom_titolo": "Dimensione Interfaccia",
+    "zoom_riduci": "Riduci dimensione interfaccia",
+    "zoom_aumenta": "Aumenta dimensione interfaccia",
     "elimina_account_titolo": "Zona Pericolo",
     "elimina_account_desc": "L'avvio di questo protocollo eliminerà permanentemente il tuo account. Le tue cronache resteranno visibili ma anonime.",
     "btn_elimina": "🗑️ Elimina Account e Dati",
@@ -237,5 +268,17 @@
     "btn_installa": "📲 Installa l'App",
     "descrizione": "Aggiungi Class Chronicles alla schermata Home per aprirla come una vera app, senza passare dal browser.",
     "ho_capito": "Ho Capito"
+  },
+  "feedback": {
+    "segnala_problema": "Segnala un problema o invia un feedback anonimo"
+  },
+  "bannato": {
+    "titolo": "Accesso Sospeso",
+    "descrizione": "Il tuo account è stato temporaneamente sospeso da un Admin della classe.",
+    "motivo": "Motivo",
+    "non_specificato": "Non specificato",
+    "fino_a": "Sospensione attiva fino a",
+    "giorni_rimanenti": "Giorni rimanenti",
+    "btn_esci": "Esci"
   }
 }

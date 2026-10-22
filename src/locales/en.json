@@ -64,7 +64,36 @@
     "sei_root": "Signed in as {{nickname}}, ROOT of this class.",
     "salva_codice_ora": "⚠️ Save this Class Code NOW",
     "avviso_codice_perso": "You won't be able to see it again after leaving this screen. Share it only with your classmates.",
-    "ho_salvato_codice": "I Saved the Code, Continue →"
+    "ho_salvato_codice": "I Saved the Code, Continue →",
+    "entra_rete_titolo": "JOIN THE NETWORK",
+    "motto": "Total anonymity. High energy. Protect your identity.",
+    "alias_attuale": "Current Alias",
+    "genera_nickname": "🔄 Generate Random Nickname",
+    "tab_entra_btn": "🚪 Join Class",
+    "tab_crea_btn": "👑 Create Class",
+    "portale_accesso": "Access Portal",
+    "codice_classe_privato": "Private Class Code",
+    "password_univoca": "Unique Password (min. 6 characters)",
+    "accetta_regole_prefisso": "I have read and accept the",
+    "regole_e_privacy": "Community Rules and Privacy Policy",
+    "btn_entra_classe": "Join Class →",
+    "hai_gia_account": "Already have an account?",
+    "accedi_qui": "Log in here",
+    "sito_ufficiale": "🌐 Official Website",
+    "canale_youtube": "🎬 YouTube Channel",
+    "root_avviso_ruolo": "You will become the ROOT of this class: you can approve chronicles, manage reports, promote other Admins, and ban users. The Class Code will be generated automatically by the system.",
+    "root_responsabilita_titolo": "⚠️ ROOT Responsibilities",
+    "root_responsabilita_testo": "As the creator of this class, you are responsible for its moderation: you must review pending chronicles, handle reports fairly, and address abusive behavior. Misuse of these powers may lead to platform intervention.",
+    "accetta_root_label": "I have read and accept the responsibilities of the ROOT role.",
+    "btn_crea_root": "👑 Create Class and Become ROOT",
+    "errore_entra_campi": "Enter both the Class Code and a password.",
+    "errore_password_min": "Password must be at least 6 characters.",
+    "errore_entra_regole": "You must accept the Community Rules to join the class.",
+    "errore_classe_numero_sezione": "To identify the class with year and section, you must select both (e.g. 3 and C).",
+    "errore_classe_obbligatoria": "Specify the class name: enter a custom name, select year and section (e.g. 3C), or both.",
+    "errore_password_classe": "Enter a password to protect the class.",
+    "errore_accetta_root": "You must accept the ROOT responsibilities to create a class.",
+    "errore_accetta_regole": "You must accept the Community Rules to proceed."
   },
   "accedi": {
     "titolo": "CLASS CHRONICLES",
@@ -221,6 +250,8 @@
     "colore_predefinito": "Default (Aqua Green)",
     "colore_personalizzato": "Custom",
     "zoom_titolo": "Interface Size",
+    "zoom_riduci": "Decrease interface size",
+    "zoom_aumenta": "Increase interface size",
     "elimina_account_titolo": "Danger Zone",
     "elimina_account_desc": "This protocol will permanently delete your account. Your chronicles will remain visible but anonymous.",
     "btn_elimina": "🗑️ Delete Account and Data",
@@ -237,5 +268,17 @@
     "btn_installa": "📲 Install App",
     "descrizione": "Add Class Chronicles to your Home screen to use it like a native app, without opening the browser.",
     "ho_capito": "Got it"
+  },
+  "feedback": {
+    "segnala_problema": "Report an issue or send anonymous feedback"
+  },
+  "bannato": {
+    "titolo": "Access Suspended",
+    "descrizione": "Your account has been temporarily suspended by a class Admin.",
+    "motivo": "Reason",
+    "non_specificato": "Not specified",
+    "fino_a": "Suspension active until",
+    "giorni_rimanenti": "Days remaining",
+    "btn_esci": "Log Out"
   }
 }

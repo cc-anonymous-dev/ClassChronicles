@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 const FORM_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLScnXRS5MAHirzkRLMryTlp-p9d8aGgctXADgtsz66xqaSThXA/viewform'
 
@@ -6,6 +8,7 @@ const FORM_URL =
  * Usato in Benvenuto, Accedi, Bannato e Impostazioni.
  */
 export default function BannerFeedback() {
+  const { t } = useTranslation()
   return (
     <div style={{ textAlign: 'center', margin: 'var(--space-md) 0' }}>
       <a
@@ -19,8 +22,9 @@ export default function BannerFeedback() {
           cursor: 'pointer',
         }}
       >
-        Segnala un problema o invia un feedback anonimo
+        {t('feedback.segnala_problema')}
       </a>
     </div>
   )
 }
+

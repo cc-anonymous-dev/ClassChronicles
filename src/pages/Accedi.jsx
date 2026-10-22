@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import BannerFeedback from '../components/BannerFeedback'
+import SelettoreLinguaRapido from '../components/SelettoreLinguaRapido'
 
 export default function Accedi() {
   const { t } = useTranslation()
@@ -74,6 +75,9 @@ export default function Accedi() {
       <div className="griglia-decorativa" />
 
       <main style={{ width: '100%', maxWidth: 400, zIndex: 1 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 'var(--space-md)' }}>
+          <SelettoreLinguaRapido />
+        </div>
         <div style={{ textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
           <div
             style={{

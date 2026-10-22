@@ -132,20 +132,21 @@ function ControlloColore() {
 }
 
 function ControlloZoom() {
+  const { t } = useTranslation()
   const { livelloZoom, aumentaZoom, diminuisciZoom, ripristinaZoom, ZOOM_MINIMO, ZOOM_MASSIMO } = useZoom()
 
   return (
     <div className="neo-card">
       <div className="controllo-zoom">
         <div>
-          <span className="text-body-md" style={{ fontWeight: 600, display: 'block' }}>Dimensione Interfaccia</span>
+          <span className="text-body-md" style={{ fontWeight: 600, display: 'block' }}>{t('impostazioni.zoom_titolo')}</span>
           <button
             type="button"
             className="link-testuale"
             style={{ fontSize: 12, color: 'var(--color-on-surface-variant)' }}
             onClick={ripristinaZoom}
           >
-            Ripristina predefinito
+            {t('comune.ripristina_predefinito')}
           </button>
         </div>
         <div className="controllo-zoom-bottoni">
@@ -154,7 +155,7 @@ function ControlloZoom() {
             className="btn-zoom"
             onClick={diminuisciZoom}
             disabled={livelloZoom <= ZOOM_MINIMO}
-            aria-label="Riduci dimensione interfaccia"
+            aria-label={t('impostazioni.zoom_riduci')}
           >
             A-
           </button>
@@ -164,7 +165,7 @@ function ControlloZoom() {
             className="btn-zoom"
             onClick={aumentaZoom}
             disabled={livelloZoom >= ZOOM_MASSIMO}
-            aria-label="Aumenta dimensione interfaccia"
+            aria-label={t('impostazioni.zoom_aumenta')}
           >
             A+
           </button>
@@ -175,6 +176,7 @@ function ControlloZoom() {
 }
 
 function SezioneEliminaAccount({ utente, onEliminato }) {
+  const { t } = useTranslation()
   const [mostraForm, setMostraForm] = useState(false)
   const [password, setPassword] = useState('')
   const [inviando, setInviando] = useState(false)
@@ -197,23 +199,22 @@ function SezioneEliminaAccount({ utente, onEliminato }) {
     <div className="zona-pericolo">
       <div className="zona-pericolo-danger-header">
         <span aria-hidden="true">⚠️</span>
-        <span>Zona Pericolo</span>
+        <span>{t('impostazioni.elimina_account_titolo')}</span>
       </div>
 
       {!mostraForm ? (
         <>
           <p className="text-body-md" style={{ margin: 0, textAlign: 'center', color: 'var(--color-on-surface-variant)', fontSize: 14 }}>
-            L'avvio di questo protocollo eliminerà permanentemente il tuo account.
-            Le tue cronache resteranno visibili ma anonime.
+            {t('impostazioni.elimina_account_desc')}
           </p>
           <button className="btn-autodistruzione" onClick={() => setMostraForm(true)}>
-            🗑️ Elimina Account e Dati
+            {t('impostazioni.btn_elimina')}
           </button>
         </>
       ) : (
         <div className="conferma-autodistruzione-box">
           <p className="text-body-md" style={{ margin: 0 }}>
-            Questa azione non può essere annullata. Inserisci la tua password per confermare.
+            {t('impostazioni.elimina_conferma_desc')}
           </p>
 
           {errore && (
@@ -233,7 +234,7 @@ function SezioneEliminaAccount({ utente, onEliminato }) {
               onChange={(e) => setPassword(e.target.value)}
               disabled={inviando}
             />
-            <label className="campo-label" htmlFor="password-elimina-account">La tua password</label>
+            <label className="campo-label" htmlFor="password-elimina-account">{t('impostazioni.campo_password')}</label>
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
@@ -243,14 +244,14 @@ function SezioneEliminaAccount({ utente, onEliminato }) {
               onClick={gestisciEliminazione}
               disabled={inviando || !password}
             >
-              {inviando ? <span className="spinner" aria-hidden="true" /> : 'Elimina Account Permanentemente'}
+              {inviando ? <span className="spinner" aria-hidden="true" /> : t('impostazioni.btn_conferma_elimina')}
             </button>
             <button
               className="btn-azione-piccolo"
               onClick={() => { setMostraForm(false); setPassword(''); setErrore('') }}
               disabled={inviando}
             >
-              Annulla
+              {t('admin.btn_annulla')}
             </button>
           </div>
         </div>
@@ -281,9 +282,9 @@ export default function Impostazioni() {
         <SezioneEliminaAccount utente={utente} onEliminato={gestisciAccountEliminato} />
         
         <div className="neo-card" style={{ backgroundColor: 'var(--color-surface-container)' }}>
-          <h3 className="text-title-lg" style={{ margin: '0 0 var(--space-sm) 0' }}>Risorse Utili</h3>
+          <h3 className="text-title-lg" style={{ margin: '0 0 var(--space-sm) 0' }}>{t('impostazioni.risorse_titolo')}</h3>
           <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)', margin: '0 0 var(--space-md) 0' }}>
-            Visita il nostro sito ufficiale o il canale YouTube per scoprire come funziona Class Chronicles e vedere i video tutorial.
+            {t('impostazioni.risorse_desc')}
           </p>
           <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
             <a
@@ -293,7 +294,7 @@ export default function Impostazioni() {
               className="btn-brutalist btn-secondary-outline"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-xs)', textDecoration: 'none' }}
             >
-              🌐 Sito Web
+              {t('impostazioni.sito_web')}
             </a>
             <a
               href="https://youtube.com/@classchroniclesdev?si=xG2_Uy0gknBKlGED"
@@ -302,7 +303,7 @@ export default function Impostazioni() {
               className="btn-brutalist btn-secondary-outline"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-xs)', textDecoration: 'none' }}
             >
-              🎬 Canale YouTube
+              {t('impostazioni.canale_youtube')}
             </a>
           </div>
         </div>

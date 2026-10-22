@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../lib/AuthContext'
+import SelettoreLinguaRapido from '../components/SelettoreLinguaRapido'
 
 const CHIAVE_ONBOARDING_VISTO = 'classchronicles_onboarding_visto'
 
@@ -65,6 +66,9 @@ export default function Onboarding() {
     <div className="pagina">
       <div className="griglia-decorativa" />
       <div className="onboarding-pagina" style={{ zIndex: 1 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginBottom: 'var(--space-xs)' }}>
+          <SelettoreLinguaRapido />
+        </div>
         <div className="onboarding-step">
           <span className="onboarding-icona" aria-hidden="true">{step.icona}</span>
           <h2 className="text-display-lg" style={{ fontSize: 26, textAlign: 'center', margin: 0 }}>

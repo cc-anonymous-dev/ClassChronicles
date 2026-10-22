@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../lib/AuthContext'
 import BannerFeedback from '../components/BannerFeedback'
 
@@ -9,15 +10,18 @@ function giorniRimanenti(dataIso) {
   return Math.max(1, Math.ceil(msRimanenti / (1000 * 60 * 60 * 24)))
 }
 
-function dataFormattata(dataIso) {
-  return new Date(dataIso).toLocaleDateString('it-IT', {
+function dataFormattata(dataIso, locale = 'it-IT') {
+  return new Date(dataIso).toLocaleDateString(locale, {
     day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
   })
 }
 
 export default function Bannato() {
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { utente, esci } = useAuth()
+
+  const localeData = i18n.language?.startsWith('en') ? 'en-US' : 'it-IT'
 
   function gestisciUscita() {
     esci()
@@ -44,10 +48,10 @@ export default function Bannato() {
       >
         <span style={{ fontSize: 48 }}>🚫</span>
         <h2 className="text-headline-md" style={{ margin: 0, color: 'var(--color-error)' }}>
-          Accesso Sospeso
+          {t('bannato.titolo')}
         </h2>
         <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)' }}>
-          Il tuo account è stato temporaneamente sospeso da un Admin della classe.
+          {t('bannato.descrizione')}
         </p>
 
         <div
@@ -62,15 +66,15 @@ export default function Bannato() {
           }}
         >
           <div>
-            <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>Motivo</span>
-            <p className="text-body-md" style={{ margin: 0 }}>{utente.motivo_ban || 'Non specificato'}</p>
+            <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>{t('bannato.motivo')}</span>
+            <p className="text-body-md" style={{ margin: 0 }}>{utente.motivo_ban || t('bannato.non_specificato')}</p>
           </div>
           <div>
-            <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>Sospensione attiva fino a</span>
-            <p className="text-body-md" style={{ margin: 0 }}>{dataFormattata(utente.bannato_fino_a)}</p>
+            <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>{t('bannato.fino_a')}</span>
+            <p className="text-body-md" style={{ margin: 0 }}>{dataFormattata(utente.bannato_fino_a, localeData)}</p>
           </div>
           <div>
-            <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>Giorni rimanenti</span>
+            <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>{t('bannato.giorni_rimanenti')}</span>
             <p className="text-body-md" style={{ margin: 0, fontSize: 24, fontWeight: 700 }}>
               {giorniRimanenti(utente.bannato_fino_a)}
             </p>
@@ -80,7 +84,7 @@ export default function Bannato() {
         <BannerFeedback />
 
         <button className="btn-brutalist btn-secondary-outline" onClick={gestisciUscita}>
-          Esci
+          {t('bannato.btn_esci')}
         </button>
       </div>
     </div>
