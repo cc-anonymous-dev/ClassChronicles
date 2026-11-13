@@ -9,3 +9,13 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
+
+// Registrazione Service Worker per Notifiche Push PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.error('Errore registrazione Service Worker:', err)
+    })
+  })
+}
+

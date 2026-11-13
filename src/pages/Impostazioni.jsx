@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { chiamaFunzione } from '../lib/supabaseClient'
@@ -6,6 +6,13 @@ import { useAuth } from '../lib/AuthContext'
 import { useZoom } from '../lib/ZoomContext'
 import { useTema } from '../lib/TemaContext'
 import { useColore } from '../lib/ColoreContext'
+import {
+  supportaNotifichePush,
+  ottieniIscrizionePush,
+  attivaNotifichePush,
+  disattivaNotifichePush,
+  eIOSNonStandalone,
+} from '../lib/notifichePush'
 import LayoutApp from '../components/LayoutApp'
 import BannerFeedback from '../components/BannerFeedback'
 
@@ -175,6 +182,88 @@ function ControlloZoom() {
   )
 }
 
+function ControlloNotifiche({ utente }) {
+  const { t } = useTranslation()
+  const [attivo, setAttivo] = useState(false)
+  const [caricando, setCaricando] = useState(false)
+  const [errore, setErrore] = useState('')
+  const [supportato, setSupportato] = useState(false)
+
+  const iosNonStandalone = eIOSNonStandalone()
+
+  useEffect(() => {
+    if (!supportaNotifichePush()) return
+    setSupportato(true)
+    if (!iosNonStandalone) {
+      ottieniIscrizionePush().then((sub) => {
+        setAttivo(Boolean(sub))
+      }).catch(() => {})
+    }
+  }, [iosNonStandalone])
+
+  if (!supportato) return null
+
+  async function gestisciToggle(e) {
+    const nuovoStato = e.target.checked
+    setErrore('')
+
+    if (iosNonStandalone) {
+      setErrore(t('impostazioni.notifiche_ios_avviso'))
+      return
+    }
+
+    setCaricando(true)
+    try {
+      if (nuovoStato) {
+        await attivaNotifichePush(utente?.id)
+        setAttivo(true)
+      } else {
+        await disattivaNotifichePush(utente?.id)
+        setAttivo(false)
+      }
+    } catch (err) {
+      setErrore(err.message || 'Errore durante la gestione delle notifiche.')
+      setAttivo(!nuovoStato)
+    } finally {
+      setCaricando(false)
+    }
+  }
+
+  return (
+    <div className="neo-card">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--space-md)' }}>
+          <div style={{ flex: 1 }}>
+            <span className="text-body-md" style={{ fontWeight: 600 }}>{t('impostazioni.notifiche_titolo')}</span>
+            <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: '4px 0 0 0' }}>
+              {iosNonStandalone
+                ? t('impostazioni.notifiche_ios_avviso')
+                : t('impostazioni.notifiche_desc')}
+            </p>
+          </div>
+          <label className="toggle-switch" style={{ opacity: caricando ? 0.6 : 1 }}>
+            <input
+              type="checkbox"
+              checked={attivo}
+              onChange={gestisciToggle}
+              disabled={caricando}
+              aria-label={t('impostazioni.notifiche_titolo')}
+            />
+            <span className="toggle-slider" />
+          </label>
+        </div>
+
+        {errore && (
+          <div className="messaggio-errore" role="alert" style={{ marginTop: 'var(--space-xs)' }}>
+            <span aria-hidden="true">⚠️</span>
+            <span>{errore}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function SezioneEliminaAccount({ utente, onEliminato }) {
   const { t } = useTranslation()
   const [mostraForm, setMostraForm] = useState(false)
@@ -188,6 +277,7 @@ function SezioneEliminaAccount({ utente, onEliminato }) {
     setInviando(true)
     try {
       await chiamaFunzione('elimina-account', { utente_id: utente.id, password })
+      await disattivaNotifichePush(utente.id).catch(() => {})
       onEliminato()
     } catch (err) {
       setErrore(err.message)
@@ -279,6 +369,7 @@ export default function Impostazioni() {
         <ControlloTema />
         <ControlloColore />
         <ControlloZoom />
+        <ControlloNotifiche utente={utente} />
         <SezioneEliminaAccount utente={utente} onEliminato={gestisciAccountEliminato} />
         
         <div className="neo-card" style={{ backgroundColor: 'var(--color-surface-container)' }}>

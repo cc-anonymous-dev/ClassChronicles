@@ -1,4 +1,5 @@
-﻿import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { disattivaNotifichePush } from './notifichePush'
 
 const AuthContext = createContext(null)
 
@@ -30,10 +31,14 @@ export function AuthProvider({ children }) {
     localStorage.setItem(CHIAVE_STORAGE, JSON.stringify(datiUtente))
   }, [])
 
-  const esci = useCallback(() => {
+  const esci = useCallback(async () => {
+    const idCorrente = utente?.id
     setUtente(null)
     localStorage.removeItem(CHIAVE_STORAGE)
-  }, [])
+    if (idCorrente) {
+      await disattivaNotifichePush(idCorrente).catch(() => {})
+    }
+  }, [utente?.id])
 
   return (
     <AuthContext.Provider value={{ utente, accedi, esci, caricamento }}>

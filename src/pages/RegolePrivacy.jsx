@@ -127,6 +127,23 @@ export default function RegolePrivacy() {
           </p>
         </section>
 
+        <section className="regole-sezione">
+          <h3>🔔 9. Notifiche</h3>
+          <p>
+            Le notifiche push sono completamente facoltative e disattivate per impostazione predefinita.
+          </p>
+          <p>
+            Se le attivi, salviamo esclusivamente un identificativo tecnico anonimo del tuo dispositivo,
+            usato solo per consegnarle. Questo dato non è collegato ad alcuna informazione personale.
+          </p>
+          <p>
+            Le notifiche non contengono mai nomi di persone né testi delle cronache.
+          </p>
+          <p>
+            L'iscrizione viene cancellata se le disattivi dalle Impostazioni, se esci dal tuo account o se elimini l'account.
+          </p>
+        </section>
+
         <p className="text-body-md" style={{ textAlign: 'center', color: 'var(--color-on-surface-variant)', fontSize: 13 }}>
           Ultimo aggiornamento: {new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}
         </p>
